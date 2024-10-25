@@ -11,7 +11,9 @@
 - **Model**: 애플리케이션의 데이터와 비즈니스 로직을 포함
 - **Repository**: Firebase와의 데이터 통신을 담당하는 계층
 
+
 ### 프로젝트 구조
+```
 app/src/main/java/com.kau.oop/
 ├── data/                      # 데이터 계층
 │   ├── model/                 # 데이터 모델 클래스
@@ -32,6 +34,7 @@ app/src/main/java/com.kau.oop/
 │   └── chat/                  # 채팅 관련 UI
 │       ├── view/             # 채팅 목록/대화방 화면
 │       └── viewmodel/        # 채팅 관련 뷰모델
+```
 
 ### 도메인 구조
 프로젝트는 3개의 주요 도메인으로 구성됩니다:
