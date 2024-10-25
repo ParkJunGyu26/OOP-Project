@@ -1,6 +1,7 @@
 # 기존 내용에 추가
 # Firebase
 #google-services.json   # Firebase 설정 파일 (만약 공개하고 싶지 않다면) -> 일단 보류
+local.properties
 
 # Gradle files
 .gradle/
