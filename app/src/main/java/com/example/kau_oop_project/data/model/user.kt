@@ -1,4 +1,4 @@
-package com.example.kau_oop_project.model
+package com.example.kau_oop_project.data.model
 
 data class user(
     val uid: String,
