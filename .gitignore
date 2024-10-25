@@ -1,16 +1,47 @@
+# 기존 내용에 추가
+# Firebase
+#google-services.json   # Firebase 설정 파일 (만약 공개하고 싶지 않다면) -> 일단 보류
+
+# Gradle files
+.gradle/
+gradle/caches/
+gradle/wrapper/dists/
+gradle/notification/
+gradle/buildOutputCleanup/
+
+# Generated files
+bin/
+gen/
+out/
+
+# Log Files
+*.log
+
+# Android Studio Navigation editor temp files
+.navigation/
+
+# Android Studio captures folder
+captures/
+
+# IntelliJ
 *.iml
-.gradle
-/local.properties
-/.idea/caches
-/.idea/libraries
-/.idea/modules.xml
-/.idea/workspace.xml
-/.idea/navEditor.xml
-/.idea/assetWizardSettings.xml
-.DS_Store
-/build
-/captures
-.externalNativeBuild
-.cxx
-local.properties
 .idea/
+misc.xml
+deploymentTargetDropDown.xml
+render.experimental.xml
+
+# Keystore files
+*.jks
+*.keystore
+
+# Version control
+vcs.xml
+
+# OS specific
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
