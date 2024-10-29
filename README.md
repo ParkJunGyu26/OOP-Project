@@ -41,18 +41,20 @@ app/src/main/java/com.kau.oop/
 
 1. **User Domain**
    - 회원가입/로그인 기능
-   - 사용자 프로필 관리
-   - 계정 설정
+   - 마이페이지(활동 목록)
+   - 알림 목록
 
 2. **Post Domain**
    - 게시글 작성/조회/수정/삭제
    - 댓글 기능
    - 게시글 검색
+   - 스크랩
 
 3. **Chat Domain**
-   - 실시간 채팅
-   - 채팅방 생성/관리
-   - 메시지 전송/수신
+   - 일대일 채팅
+   - 다대다 채팅(오픈채팅)
+   - 사진 및 파일 첨부
+   - 푸시 알림
 
 ## Git Flow
 이 프로젝트는 Git Flow 전략을 따릅니다:
@@ -60,7 +62,10 @@ app/src/main/java/com.kau.oop/
 - `main`: 제품 출시 버전
 - `feature/*`: 기능 개발 브랜치
   - 각 개발자는 feature 브랜치에서 작업
-  - 코드 리뷰 후 main 브랜치로 병합
+  - 코드 리뷰 후 main 브랜치로 병합(ex)
+    - feature/user
+    - feature/post
+    - feature/chat
 
 ### 개발 프로세스
 1. feature 브랜치 생성
@@ -74,6 +79,9 @@ app/src/main/java/com.kau.oop/
   - 예: `feature/user/login`
   - 예: `feature/post/write`
   - 예: `feature/chat/message`
+
+### 레이아웃 명명 규칙
+- 파일명: activity_{domain}_{feature_name}
 
 ## Team
 - User Domain: [박준규]
