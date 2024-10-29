@@ -1,4 +1,4 @@
-# KAU OOP Project
+# KAU OOP Project dd
 
 안드로이드 MVVM 패턴을 활용한 서버리스 채팅 애플리케이션
 
