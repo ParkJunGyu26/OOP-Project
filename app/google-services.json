@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "384033532242",
+    "project_id": "kau-oop-project",
+    "storage_bucket": "kau-oop-project.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:384033532242:android:811c1a5520b8f7757bb28b",
+        "android_client_info": {
+          "package_name": "com.example.kau_oop_project"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBo0AoiAqD2hE-0vGV9kIVu--T2kYJWeXg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

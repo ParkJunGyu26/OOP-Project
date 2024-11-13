@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_main"
+    app:startDestination="@id/loginFragment">
+
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.example.kau_oop_project.LoginFragment"
+        android:label="fragment_login"
+        tools:layout="@layout/fragment_login" >
+        <action
+            android:id="@+id/action_loginFragment_to_registerFragment"
+            app:destination="@id/registerFragment" />
+        <action
+            android:id="@+id/action_loginFragment_to_mypageFragment"
+            app:destination="@id/mypageFragment" />
+        <action
+            android:id="@+id/action_loginFragment_self"
+            app:destination="@id/loginFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/registerFragment"
+        android:name="com.example.kau_oop_project.RegisterFragment"
+        android:label="fragment_register"
+        tools:layout="@layout/fragment_register" >
+        <action
+            android:id="@+id/action_registerFragment_to_mypageFragment"
+            app:destination="@id/mypageFragment" />
+        <action
+            android:id="@+id/action_registerFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/mypageFragment"
+        android:name="com.example.kau_oop_project.mypageFragment"
+        android:label="fragment_mypage"
+        tools:layout="@layout/fragment_mypage" >
+        <action
+            android:id="@+id/action_mypageFragment_to_updateMypageFragment"
+            app:destination="@id/updateMypageFragment" />
+        <action
+            android:id="@+id/action_mypageFragment_to_myLogFragment"
+            app:destination="@id/myPostLogFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/updateMypageFragment"
+        android:name="com.example.kau_oop_project.updateMypageFragment"
+        android:label="fragment_update_mypage"
+        tools:layout="@layout/fragment_update_mypage" >
+        <action
+            android:id="@+id/action_updateMypageFragment_to_mypageFragment"
+            app:destination="@id/mypageFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/myPostLogFragment"
+        android:name="com.example.kau_oop_project.myPostLogFragment"
+        android:label="fragment_my_log"
+        tools:layout="@layout/fragment_my_post_log" >
+        <action
+            android:id="@+id/action_myPostLogFragment_to_myScrapLogFragment"
+            app:destination="@id/myScrapLogFragment" />
+        <action
+            android:id="@+id/action_myPostLogFragment_to_myCommentLogFragment"
+            app:destination="@id/myCommentLogFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/myCommentLogFragment"
+        android:name="com.example.kau_oop_project.myCommentLogFragment"
+        android:label="fragment_my_comment_log"
+        tools:layout="@layout/fragment_my_comment_log" >
+        <action
+            android:id="@+id/action_myCommentLogFragment_to_myPostLogFragment"
+            app:destination="@id/myPostLogFragment" />
+        <action
+            android:id="@+id/action_myCommentLogFragment_to_myScrapLogFragment"
+            app:destination="@id/myScrapLogFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/myScrapLogFragment"
+        android:name="com.example.kau_oop_project.myScrapLogFragment"
+        android:label="fragment_my_scrap_log"
+        tools:layout="@layout/fragment_my_scrap_log" >
+        <action
+            android:id="@+id/action_myScrapLogFragment_to_myPostLogFragment"
+            app:destination="@id/myPostLogFragment" />
+        <action
+            android:id="@+id/action_myScrapLogFragment_to_myCommentLogFragment"
+            app:destination="@id/myCommentLogFragment" />
+    </fragment>
+</navigation>
