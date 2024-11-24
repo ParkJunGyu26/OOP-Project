@@ -8,23 +8,42 @@ import kotlinx.coroutines.withContext
 
 class LoginRepository {
     val database = Firebase.database
-    val userRef = database.getReference("user")
+    val userRef = database.getReference("users")
 
     suspend fun checkEmail(inputEmail: String?): Boolean {
         return withContext(Dispatchers.IO) {
-            val snapshot = inputEmail?.let {
-                userRef.child("email").get().await()
-            }
-            snapshot?.exists() ?: false
+            inputEmail?.let { email ->
+                val snapshot = userRef.get().await()
+
+                var exists = false
+                snapshot.children.forEach { userSnapshot ->
+                    val userEmail = userSnapshot.child("email").value as? String
+                    if (userEmail == email) {
+                        exists = true
+                        return@forEach
+                    }
+                }
+                exists
+            } ?: false
         }
     }
 
     suspend fun getPassword(inputEmail: String?, inputPassword: String?): Boolean {
         return withContext(Dispatchers.IO) {
-            val snapshot = inputEmail?.let {
-                userRef.child("password").get().await()
-            }
-            snapshot?.value?.toString() == inputPassword
+            inputEmail?.let { email ->
+                val snapshot = userRef.get().await()
+                
+                var isValid = false
+                snapshot.children.forEach { userSnapshot ->
+                    val userEmail = userSnapshot.child("email").value as? String
+                    val userPassword = userSnapshot.child("password").value as? String
+                    if (userEmail == email && userPassword == inputPassword) {
+                        isValid = true
+                        return@forEach
+                    }
+                }
+                isValid
+            } ?: false
         }
     }
 }
