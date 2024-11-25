@@ -10,7 +10,7 @@ class ReplyAdapter(private val replyList: List<Pair<String, String>>) :
     RecyclerView.Adapter<ReplyAdapter.ReplyViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ReplyViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.list_reply, parent, false)
+            .inflate(R.layout.item_reply, parent, false)
         return ReplyViewHolder(view)
     }
     override fun onBindViewHolder(holder: ReplyViewHolder, position: Int) {

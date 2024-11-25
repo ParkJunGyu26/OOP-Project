@@ -1,3 +1,5 @@
+package com.example.kau_oop_project.data.model
+
 // Author 데이터 클래스
 data class Author(
     val name: String,
@@ -18,19 +20,23 @@ enum class ContentType {
 
 // Reply 데이터 클래스
 data class Reply(
-    val replyAuthor: Author,
+    val replyAuthor: user,
     val replyContent: String
 )
 
 // ReplyList 데이터 클래스
 data class ReplyList(
-    val replyList: ArrayList<Reply>
+    val replyList: ArrayList<Reply>?
 )
 
 // Post 데이터 클래스
 data class Post(
     val postId: String,
-    val postAuthor: Author,
+    val postDBId:String,
+    val postTag: String,
+    val postTitle: String,
+    val postAuthor: user,
     val postContent: PostContent,
-    val postReplyList: ReplyList
+    val postReplyList: ReplyList?,
+    val timeStamp: Long
 )

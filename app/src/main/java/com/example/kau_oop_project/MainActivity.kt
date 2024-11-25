@@ -5,48 +5,29 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.commit
-import com.example.kau_oop_project.databinding.ActivityPostMainBinding
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.navigation.ui.setupWithNavController
+import com.example.kau_oop_project.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
-
+    lateinit var binding:ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val binding=ActivityPostMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-
-        val tr = supportFragmentManager.beginTransaction()
-
         enableEdgeToEdge()
-        setContentView(R.layout.activity_main)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.LinearLayout)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        val appBarConfiguration = AppBarConfiguration(
+            setOf(R.id.postListFragment,R.id.mypageFragment)
+        )
+        val navController=binding.fragmentContainerView.getFragment<NavHostFragment>().navController
+        setupActionBarWithNavController(navController,appBarConfiguration)
+        binding.bottomNavigationView.setupWithNavController(navController)
 
+        setContentView(binding.root)
+    }
+    override fun onSupportNavigateUp():Boolean {
+        val navController=binding.fragmentContainerView.getFragment<NavHostFragment>().navController
+        return navController.navigateUp() || super.onSupportNavigateUp()
     }
 }
-
-/*
-class MainActivity : AppCompatActivity() {
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        val binding=ActivityPostMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-
-        val tr = supportFragmentManager.beginTransaction()
-
-        enableEdgeToEdge()
-        setContentView(R.layout.activity_main)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.LinearLayout)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
-
-    }
-}
- */
