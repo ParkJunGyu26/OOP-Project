@@ -1,5 +1,7 @@
 package com.example.kau_oop_project.viewmodel
 
+import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -10,21 +12,30 @@ import kotlinx.coroutines.launch
 
 class PostViewModel : ViewModel() {
 
-    private val postRepository = PostRepository() // Repository 직접 초기화
-
+    private val postRepository = PostRepository() // Repository 초기화
     private val _posts = MutableLiveData<List<Post>>()
     val posts: LiveData<List<Post>> get() = _posts
 
-    // 데이터 읽어오는 함수
+    private val _selectedPost = MutableLiveData<Post?>()
+    val selectedPost: LiveData<Post?> get() = _selectedPost
+
+    // Firebase에서 데이터 읽어오기
     fun retrievePosts() {
         viewModelScope.launch {
             try {
-                val postList = postRepository.retrievePosts()
+                val postList:List<Post> = postRepository.retrievePosts()
+                Log.d("PostViewModel", "Posts retrieved successfully: ${postList.size}")
                 _posts.value = postList
             } catch (e: Exception) {
-                _posts.value = emptyList()
+                _posts.value = emptyList() // 에러 발생 시 빈 리스트 반환
+                Log.e("PostViewModel", "Error retrieving posts: ${e.message}")
             }
         }
+    }
+
+    // 제목 기준으로 정렬
+    fun sortPostsByTitle() {
+        _posts.value = _posts.value?.sortedBy { it.postTitle }
     }
 
     // 데이터 업로드 함수
@@ -37,5 +48,10 @@ class PostViewModel : ViewModel() {
                 // 에러 처리 로직
             }
         }
+    }
+
+    // 선택한 게시물을 설정하는 함수
+    fun selectPost(post: Post) {
+        _selectedPost.value = post
     }
 }

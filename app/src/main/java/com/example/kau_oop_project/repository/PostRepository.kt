@@ -21,7 +21,7 @@ class PostRepository {
             val writetenTime = System.currentTimeMillis()
 
             // 새로운 Post 객체 생성, timestamp가 포함된 post
-            val newPost = post.copy(postDBId = DBId, timeStamp = writetenTime)
+            val newPost = post.copy(postDBId = DBId, postTimeStamp = writetenTime)
 
             // Firebase에 새로운 Post 저장
             postsRef.child(DBId).setValue(newPost).await()
@@ -30,12 +30,12 @@ class PostRepository {
 
     suspend fun retrievePosts(): List<Post> {
         return withContext(Dispatchers.IO) {
-            val snapshot = postsRef.orderByChild("timestamp").get().await()
+            val snapshot = postsRef.orderByChild("timeStamp").get().await()
 
-            // `timestamp` 기준으로 정렬된 게시글 가져오기
+            // timestamp 기준으로 정렬된 게시글 가져오기
             snapshot.children.mapNotNull { postSnapshot ->
                 postSnapshot.getValue(Post::class.java)
-            }
+            }.sortedByDescending { it.postTimeStamp } // 최신 글이 위로 오도록 정렬
         }
     }
 }

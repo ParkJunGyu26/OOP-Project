@@ -1,59 +1,72 @@
 package com.example.kau_oop_project
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import com.example.kau_oop_project.databinding.FragmentPostDetailBinding
+import com.example.kau_oop_project.viewmodel.PostViewModel
+import java.text.SimpleDateFormat
+import java.util.*
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+fun formatTimestamp(timestamp: Long): String {
+    // 타임스탬프를 Date 객체로 변환
+    val date = Date(timestamp)
 
-/**
- * A simple [Fragment] subclass.
- * Use the [PostDetailFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
+    // 원하는 포맷으로 변환
+    val format = SimpleDateFormat("yy.MM.dd HH:mm", Locale.getDefault())
+
+    // 포맷된 시간 문자열 반환
+    return format.format(date)
+}
+
 class PostDetailFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    private var _binding: FragmentPostDetailBinding? = null
+    private val binding get() = _binding!!
+    private lateinit var postViewModel: PostViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_post_detail, container, false)
+        _binding = FragmentPostDetailBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment PostDetail.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            PostDetailFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        // ViewModel 초기화
+        postViewModel = ViewModelProvider(requireActivity())[PostViewModel::class.java]
+
+        // 선택된 게시물 가져오기
+        postViewModel.selectedPost.observe(viewLifecycleOwner) { post ->
+            post?.let {
+                binding.postDetailTitle.text=it.postTitle
+                binding.postDetailTag.text = it.postTag
+                binding.postDetailAuthor.text = it.postAuthor.name
+                binding.postDetailTimeStamp.text = "작성 시간 ${formatTimestamp(it.postTimeStamp)}"
+                binding.postDetailRecommendCount.text = "추천 ${it.postRecommendCount.toString()}"
+                binding.postDetailReplyCount.text="댓글 ${it.postReplyList.size.toString()}"
+
+                // PostContent가 TEXT인 경우 텍스트 합쳐서 표시
+                if (it.postContent.isNotEmpty()) {
+                    // List<PostContent>의 모든 content를 "\n"으로 결합
+                    val combinedText = it.postContent.joinToString("\n") { postContent ->
+                        postContent.content
+                    }
+                    binding.postDetailContent.text = combinedText
                 }
+
             }
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
