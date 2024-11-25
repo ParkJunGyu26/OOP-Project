@@ -9,6 +9,12 @@ import com.example.kau_oop_project.repository.RegisterRepository
 import kotlinx.coroutines.launch
 import java.util.regex.Pattern
 
+private const val PASSWORD_MIN_LENGTH = 8
+private const val PASSWORD_PATTERN = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@\$!%*#?&])[A-Za-z\\d@\$!%*#?&]{8,}$"
+private const val ENGLISH_PATTERN = ".*[A-Za-z].*"
+private const val NUMBER_PATTERN = ".*\\d.*"
+private const val SPECIAL_CHAR_PATTERN = ".*[@\$!%*#?&].*"
+
 data class User(
     val email: String,
     val password: String,
@@ -68,13 +74,13 @@ class RegisterViewModel : ViewModel() {
     
     private var isEmailDuplicationChecked = false
 
-    companion object {
-        private const val PASSWORD_MIN_LENGTH = 8
-        private const val PASSWORD_PATTERN = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@\$!%*#?&])[A-Za-z\\d@\$!%*#?&]{8,}$"
-        private const val ENGLISH_PATTERN = ".*[A-Za-z].*"
-        private const val NUMBER_PATTERN = ".*\\d.*"
-        private const val SPECIAL_CHAR_PATTERN = ".*[@\$!%*#?&].*"
-    }
+//    companion object {
+//        private const val PASSWORD_MIN_LENGTH = 8
+//        private const val PASSWORD_PATTERN = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@\$!%*#?&])[A-Za-z\\d@\$!%*#?&]{8,}$"
+//        private const val ENGLISH_PATTERN = ".*[A-Za-z].*"
+//        private const val NUMBER_PATTERN = ".*\\d.*"
+//        private const val SPECIAL_CHAR_PATTERN = ".*[@\$!%*#?&].*"
+//    }
 
     fun validateEmailFormat(email: String) {
         when {
