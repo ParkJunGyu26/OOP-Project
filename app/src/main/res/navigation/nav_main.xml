@@ -89,4 +89,34 @@
             android:id="@+id/action_myScrapLogFragment_to_myCommentLogFragment"
             app:destination="@id/myCommentLogFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/postDetailFragment"
+        android:name="com.example.kau_oop_project.PostDetailFragment"
+        android:label="PostDetail"
+        tools:layout="@layout/fragment_post_detail" >
+        <action
+            android:id="@+id/action_postDetail_to_postList"
+            app:destination="@id/postListFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/postListFragment"
+        android:name="com.example.kau_oop_project.PostListFragment"
+        android:label="PostList"
+        tools:layout="@layout/fragment_post_list" >
+        <action
+            android:id="@+id/action_postList_to_postDetail"
+            app:destination="@id/postDetailFragment" />
+        <action
+            android:id="@+id/action_postList_to_postWrite"
+            app:destination="@id/postWriteFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/postWriteFragment"
+        android:name="com.example.kau_oop_project.PostWriteFragment"
+        android:label="PostWrite"
+        tools:layout="@layout/fragment_post_write" >
+        <action
+            android:id="@+id/action_postWrite_to_postList"
+            app:destination="@id/postListFragment" />
+    </fragment>
 </navigation>
