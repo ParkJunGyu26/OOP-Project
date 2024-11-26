@@ -46,7 +46,7 @@ class ChatDetailFragment : Fragment() {
      * - 메시지 전송 버튼
      */
     private fun setupUI() {
-        val userName = arguments?.getString("name") ?: "채팅"
+        val userName = "채팅"
         
         binding?.apply {
             tvTitle.text = userName

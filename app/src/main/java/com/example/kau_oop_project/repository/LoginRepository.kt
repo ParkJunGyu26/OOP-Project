@@ -32,7 +32,7 @@ class LoginRepository {
         return withContext(Dispatchers.IO) {
             inputEmail?.let { email ->
                 val snapshot = userRef.get().await()
-                
+
                 var isValid = false
                 snapshot.children.forEach { userSnapshot ->
                     val userEmail = userSnapshot.child("email").value as? String
