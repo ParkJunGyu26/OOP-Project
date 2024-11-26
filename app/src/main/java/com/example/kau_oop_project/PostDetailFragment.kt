@@ -5,8 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import com.example.kau_oop_project.databinding.FragmentPostDetailBinding
+import com.example.kau_oop_project.viewmodel.LoginViewModel
 import com.example.kau_oop_project.viewmodel.PostViewModel
 import java.text.SimpleDateFormat
 import java.util.*
@@ -24,49 +26,47 @@ fun formatTimestamp(timestamp: Long): String {
 
 class PostDetailFragment : Fragment() {
 
-    private var _binding: FragmentPostDetailBinding? = null
-    private val binding get() = _binding!!
-    private lateinit var postViewModel: PostViewModel
+    private var binding: FragmentPostDetailBinding? = null
+    private val postViewModel: PostViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentPostDetailBinding.inflate(inflater, container, false)
-        return binding.root
+        binding = FragmentPostDetailBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // ViewModel 초기화
-        postViewModel = ViewModelProvider(requireActivity())[PostViewModel::class.java]
-
         // 선택된 게시물 가져오기
         postViewModel.selectedPost.observe(viewLifecycleOwner) { post ->
             post?.let {
-                binding.postDetailTitle.text=it.postTitle
-                binding.postDetailTag.text = it.postTag
-                binding.postDetailAuthor.text = it.postAuthor.name
-                binding.postDetailTimeStamp.text = "작성 시간 ${formatTimestamp(it.postTimeStamp)}"
-                binding.postDetailRecommendCount.text = "추천 ${it.postRecommendCount.toString()}"
-                binding.postDetailReplyCount.text="댓글 ${it.postReplyList.size.toString()}"
+                binding?.apply {
+                    postDetailTitle.text = it.postTitle
+                    postDetailTag.text = it.postTag
+                    postDetailAuthor.text = it.postAuthor.name
+                    postDetailTimeStamp.text = "작성 시간 ${formatTimestamp(it.postTimeStamp)}"
+                    postDetailRecommendCount.text = "추천 ${it.postRecommendCount.toString()}"
+                    postDetailViewCount.text="조회수 ${it.postViewCount}"
+                    postDetailReplyCount.text = "댓글 ${it.postReplyList.size.toString()}"
 
-                // PostContent가 TEXT인 경우 텍스트 합쳐서 표시
-                if (it.postContent.isNotEmpty()) {
-                    // List<PostContent>의 모든 content를 "\n"으로 결합
-                    val combinedText = it.postContent.joinToString("\n") { postContent ->
-                        postContent.content
+                    // PostContent가 TEXT인 경우 텍스트 합쳐서 표시
+                    if (it.postContent.isNotEmpty()) {
+                        // List<PostContent>의 모든 content를 "\n"으로 결합
+                        val combinedText = it.postContent.joinToString("\n") { postContent ->
+                            postContent.content
+                        }
+                        postDetailContent.text = combinedText
                     }
-                    binding.postDetailContent.text = combinedText
                 }
-
             }
         }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null
+        binding = null
     }
 }

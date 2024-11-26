@@ -31,7 +31,8 @@ data class Post(
     val postTag: String="",
     val postTitle: String="",
     val postAuthor: user=user("","","","",""),
-    val postRecommendCount: Int=0,
+    var postRecommendCount:Int=0,
+    var postViewCount:Int=0,
     val postContent: List<PostContent> = emptyList(),
     val postReplyList: List<Reply> = emptyList(),
     val postTimeStamp: Long=0

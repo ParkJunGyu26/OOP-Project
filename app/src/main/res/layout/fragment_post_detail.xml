@@ -105,11 +105,11 @@
                 android:layout_marginTop="5dp"
                 android:layout_marginEnd="2dp"
                 android:text="작성 시간"
-                app:layout_constraintEnd_toStartOf="@+id/post_view_time"
+                app:layout_constraintEnd_toStartOf="@+id/post_detail_view_count"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/post_view_time"
+                android:id="@+id/post_detail_view_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
