@@ -27,21 +27,25 @@ android {
             )
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+
     kotlinOptions {
         jvmTarget = "1.8"
     }
-    viewBinding {
-        enable = true
+
+    buildFeatures {
+        viewBinding = true
     }
 }
 
 dependencies {
+    // AndroidX Libraries
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
-
+    implementation(libs.androidx.recyclerview)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.fragment.ktx)
     implementation(libs.androidx.appcompat)
@@ -50,11 +54,13 @@ dependencies {
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
 
-    // Import the BoM for the Firebase platform
+    // Firebase with BoM
     implementation(platform("com.google.firebase:firebase-bom:33.4.0"))
-    implementation(libs.firebase.database)
-    implementation(libs.firebase.auth)
-    implementation(libs.firebase.firestore)
+    implementation("com.google.firebase:firebase-database-ktx")
+    implementation("com.google.firebase:firebase-auth-ktx")
+    implementation("com.google.firebase:firebase-firestore-ktx")
+
+    // Testing Libraries
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
