@@ -3,8 +3,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_main"
-    app:startDestination="@id/loginFragment">
+    app:startDestination="@id/chatMainFragment">
 
+    <fragment
+        android:id="@+id/chatMainFragment"
+        android:name="com.example.kau_oop_project.ChatMainFragment"
+        android:label="fragment_chat_main"
+        tools:layout="@layout/fragment_chat_main">
+        <action
+            android:id="@+id/action_chatMainFragment_to_chatDetailFragment"
+            app:destination="@id/chatDetailFragment" />
+    </fragment>
     <fragment
         android:id="@+id/loginFragment"
         android:name="com.example.kau_oop_project.LoginFragment"
@@ -88,6 +97,22 @@
         <action
             android:id="@+id/action_myScrapLogFragment_to_myCommentLogFragment"
             app:destination="@id/myCommentLogFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/chatListFragment"
+        android:name="com.example.kau_oop_project.ChatListFragment"
+        android:label="fragment_chat_list"
+        tools:layout="@layout/fragment_chat_list">
+        <action
+            android:id="@+id/action_chatListFragment_to_chatDetailFragment"
+            app:destination="@id/chatDetailFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/chatDetailFragment"
+        android:name="com.example.kau_oop_project.ChatDetailFragment"
+        android:label="fragment_chat_detail"
+        tools:layout="@layout/fragment_chat_detail">
     </fragment>
     <fragment
         android:id="@+id/postDetailFragment"

@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">KAU-OOP-Project</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="tab_chat">채팅</string>
+    <string name="tab_open_chat">오픈채팅</string>
 </resources>

@@ -17,14 +17,16 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        setSupportActionBar(binding.toolbar)
+        
         val appBarConfiguration = AppBarConfiguration(
             setOf(R.id.postListFragment,R.id.mypageFragment)
         )
         val navController=binding.fragmentContainerView.getFragment<NavHostFragment>().navController
         setupActionBarWithNavController(navController,appBarConfiguration)
         binding.bottomNavigationView.setupWithNavController(navController)
-
-        setContentView(binding.root)
     }
     override fun onSupportNavigateUp():Boolean {
         val navController=binding.fragmentContainerView.getFragment<NavHostFragment>().navController
