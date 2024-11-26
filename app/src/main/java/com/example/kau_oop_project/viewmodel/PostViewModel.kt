@@ -22,14 +22,9 @@ class PostViewModel : ViewModel() {
     // Firebase에서 데이터 읽어오기
     fun retrievePosts() {
         viewModelScope.launch {
-            try {
-                val postList:List<Post> = postRepository.retrievePosts()
-                Log.d("PostViewModel", "Posts retrieved successfully: ${postList.size}")
-                _posts.value = postList
-            } catch (e: Exception) {
-                _posts.value = emptyList() // 에러 발생 시 빈 리스트 반환
-                Log.e("PostViewModel", "Error retrieving posts: ${e.message}")
-            }
+            val postList:List<Post> = postRepository.retrievePosts()
+            Log.d("PostViewModel", "Posts retrieved successfully: ${postList.size}")
+            _posts.value = postList
         }
     }
 
@@ -38,15 +33,24 @@ class PostViewModel : ViewModel() {
         _posts.value = _posts.value?.sortedBy { it.postTitle }
     }
 
+    fun sortPostsByTimeStamp() {
+        _posts.value = _posts.value?.sortedBy { it.postTimeStamp }
+    }
+
+    fun sortPostsByRecommendCount() {
+        _posts.value = _posts.value?.sortedBy { it.postRecommendCount }
+    }
+
+    fun sortPostsByViewCount() {
+        _posts.value = _posts.value?.sortedBy { it.postViewCount }
+    }
+
+
     // 데이터 업로드 함수
     fun uploadPost(post: Post) {
         viewModelScope.launch {
-            try {
-                postRepository.uploadPost(post) // 포스트를 업로드
-                retrievePosts() // 업로드 후 리스트 갱신
-            } catch (e: Exception) {
-                // 에러 처리 로직
-            }
+            postRepository.uploadPost(post) // 포스트를 업로드
+            retrievePosts() // 업로드 후 리스트 갱신
         }
     }
 
