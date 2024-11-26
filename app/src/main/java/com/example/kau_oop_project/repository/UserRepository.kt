@@ -12,23 +12,13 @@ open class UserRepository {
     protected val userRef = database.getReference("users")
 
     protected suspend fun getUserByEmail(email: String): DataSnapshot? {
-        return try {
-            userRef.orderByChild("email").equalTo(email).get().await()
-        } catch (e: Exception) {
-            e.printStackTrace()
-            null
-        }
+        return userRef.orderByChild("email").equalTo(email).get().await()
     }
 
     suspend fun checkEmailExists(email: String): Boolean {
         return withContext(Dispatchers.IO) {
-            try {
-                val snapshot = getUserByEmail(email)
-                snapshot?.exists() ?: false
-            } catch (e: Exception) {
-                e.printStackTrace()
-                false
-            }
+            val snapshot = getUserByEmail(email)
+            snapshot?.exists() ?: false
         }
     }
 }
