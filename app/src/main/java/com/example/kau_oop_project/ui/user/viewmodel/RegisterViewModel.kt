@@ -23,7 +23,7 @@ data class User(
     val major: String
 )
 
-data class FieldValidation(
+class FieldValidation(
     val message: String = "",
     val isValid: Boolean = false
 )
