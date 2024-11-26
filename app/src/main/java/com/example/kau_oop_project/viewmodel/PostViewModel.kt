@@ -16,7 +16,7 @@ class PostViewModel : ViewModel() {
     private val _posts = MutableLiveData<List<Post>>()
     val posts: LiveData<List<Post>> get() = _posts
 
-    private val _selectedPost = MutableLiveData<Post?>()
+    private val _selectedPost = MutableLiveData<Post>()
     val selectedPost: LiveData<Post?> get() = _selectedPost
 
     // Firebase에서 데이터 읽어오기

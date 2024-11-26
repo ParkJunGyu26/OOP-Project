@@ -15,16 +15,16 @@ class PostRepository {
     suspend fun uploadPost(post: Post) {
         withContext(Dispatchers.IO) {
             // Firebase가 생성한 고유 ID
-            val DBId = postsRef.push().key ?: return@withContext
+            val databaseId = postsRef.push().key ?: return@withContext
 
             // timestamp를 현재 시간으로 설정
             val writetenTime = System.currentTimeMillis()
 
             // 새로운 Post 객체 생성, timestamp가 포함된 post
-            val newPost = post.copy(postDBId = DBId, postTimeStamp = writetenTime)
+            val newPost = post.copy(postDBId = databaseId, postTimeStamp = writetenTime)
 
             // Firebase에 새로운 Post 저장
-            postsRef.child(DBId).setValue(newPost).await()
+            postsRef.child(databaseId).setValue(newPost).await()
         }
     }
 
