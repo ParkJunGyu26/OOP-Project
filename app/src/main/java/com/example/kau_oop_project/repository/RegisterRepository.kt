@@ -12,13 +12,8 @@ class RegisterRepository : UserRepository() {
     }
 
     suspend fun registerUser(user: User): Boolean = withContext(Dispatchers.IO) {
-        try {
-            val newUserRef = userRef.push()
-            newUserRef.setValue(user).await()
-            true
-        } catch (e: Exception) {
-            Log.e("RegisterRepository", "db push 실패", e)
-            false  // 실패 처리
-        }
+        val newUserRef = userRef.push()
+        newUserRef.setValue(user).await()
+        true
     }
 }
