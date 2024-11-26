@@ -22,7 +22,7 @@ class LoginFragment : Fragment() {
         super.onCreate(savedInstanceState)
     }
 
-    // 프래그먼트(뷰) 생성되면서 
+    // 프래그먼트(뷰) 생성되면서
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
