@@ -11,8 +11,7 @@ import com.example.kau_oop_project.databinding.FragmentChatListBinding
 import com.example.kau_oop_project.data.model.chat.ChatRoom
 
 class ChatListFragment : Fragment() {
-    private var _binding: FragmentChatListBinding? = null
-    private val binding get() = _binding!!
+    private var binding: FragmentChatListBinding? = null
     private lateinit var chatAdapter: ChatRoomAdapter
     private var isOpenChat: Boolean = false
 
@@ -37,9 +36,9 @@ class ChatListFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentChatListBinding.inflate(inflater, container, false)
-        return binding.root
+    ): View? {
+        binding = FragmentChatListBinding.inflate(inflater)
+        return binding?.root
     }
 
     /**
@@ -60,16 +59,17 @@ class ChatListFragment : Fragment() {
             val bundle = Bundle().apply {
                 putString("name", chatRoom.participants[1])
             }
+            // 채팅 상세화면으로 네비게이션
             findNavController().navigate(
                 R.id.action_chatMainFragment_to_chatDetailFragment,
                 bundle
             )
         }
 
-        binding.recyclerView.apply {
+        binding?.recyclerView?.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = chatAdapter
-            setHasFixedSize(true)
+            setHasFixedSize(true) // 성능 최적화
         }
     }
 
@@ -92,11 +92,8 @@ class ChatListFragment : Fragment() {
         chatAdapter.submitList(dummyData)
     }
 
-    /**
-     * Fragment 소멸 시 바인딩 정리
-     */
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null
+        binding = null
     }
 } 

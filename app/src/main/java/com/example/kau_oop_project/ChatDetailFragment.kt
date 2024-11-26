@@ -5,12 +5,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.kau_oop_project.databinding.FragmentChatDetailBinding
+import com.example.kau_oop_project.viewmodel.ChatDetailViewModel
+import com.example.kau_oop_project.viewmodel.ChatViewModel
 
 class ChatDetailFragment : Fragment() {
-    private var _binding: FragmentChatDetailBinding? = null
-    private val binding get() = _binding!!
+    private val viewModel: ChatDetailViewModel by viewModels()
+    private var binding: FragmentChatDetailBinding? = null
 
     /**
      * Fragment의 View를 생성하고 초기화
@@ -20,9 +23,9 @@ class ChatDetailFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentChatDetailBinding.inflate(inflater, container, false)
-        return binding.root
+    ): View? {
+        binding = FragmentChatDetailBinding.inflate(inflater)
+        return binding?.root
     }
 
     /**
@@ -43,18 +46,30 @@ class ChatDetailFragment : Fragment() {
      * - 메시지 전송 버튼
      */
     private fun setupUI() {
-        binding.btnBack.setOnClickListener {
+        val userName = arguments?.getString("name") ?: "채팅"
+        
+        binding?.apply {
+            tvTitle.text = userName
+            name.text = userName
+        }
+
+        binding?.btnBack?.setOnClickListener {
             findNavController().navigateUp()
         }
         
-        binding.tvTitle.text = arguments?.getString("name") ?: "채팅"
-        
-        binding.btnSend.setOnClickListener {
-//            val message = binding.etMessage.text.toString()
-//            if (message.isNotEmpty()) {
-//                // TODO: 메시지 전송 구현
-//                binding.etMessage.text.clear()
-//            }
+        binding?.btnSend?.setOnClickListener {
+            val message = binding?.editMessage?.text.toString()
+            if (message.isNotEmpty()) {
+                viewModel.sendMessage(message)
+                binding?.editMessage?.text?.clear()
+            }
+        }
+
+        viewModel.messageStatus.observe(viewLifecycleOwner) { isSuccess ->
+            binding?.btnSend?.apply {
+                isEnabled = isSuccess  // 버튼 활성화/비활성화
+                alpha = if (isSuccess) 1.0f else 0.5f  // 버튼 투명도 조절
+            }
         }
     }
 
@@ -65,19 +80,20 @@ class ChatDetailFragment : Fragment() {
     private fun setupAttachmentMenu() {
         var isMenuOpen = false
         
-        binding.btnAdd.setOnClickListener {
+        binding?.btnAdd?.setOnClickListener {
+            // 상태 토글 (true → false 또는 false → true)
             isMenuOpen = !isMenuOpen
-            binding.attachmentMenu.visibility = if (isMenuOpen) View.VISIBLE else View.GONE
-            binding.btnAdd.setImageResource(if (isMenuOpen) R.drawable.down else R.drawable.add)
+
+            // 메뉴 표시/숨김 설정
+            binding?.attachmentMenu?.visibility = if (isMenuOpen) View.VISIBLE else View.GONE
+
+             // 버튼 아이콘 변경 (열림/닫힘 상태에 따라)
+            binding?.btnAdd?.setImageResource(if (isMenuOpen) R.drawable.down else R.drawable.add)
         }
     }
 
-    /**
-     * Fragment 제거 시 메모리 누수 방지를 위한 정리
-     * binding 참조 해제
-     */
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null
+        binding = null
     }
 } 

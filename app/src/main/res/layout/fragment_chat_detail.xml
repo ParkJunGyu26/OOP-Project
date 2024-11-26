@@ -15,8 +15,8 @@
 
         <ImageButton
             android:id="@+id/btn_back"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="뒤로가기"
             android:src="@drawable/back"
@@ -72,10 +72,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
-            android:text="님과 일대일 채팅이 시작되었습니다."
+            android:text="님과 채팅이 시작되었습니다."
+            app:layout_constraintBottom_toBottomOf="@id/name"
             app:layout_constraintStart_toEndOf="@id/name"
-            app:layout_constraintTop_toTopOf="@id/name"
-            app:layout_constraintBottom_toBottomOf="@id/name" />
+            app:layout_constraintTop_toTopOf="@id/name" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <!-- 채팅 메시지 목록 -->

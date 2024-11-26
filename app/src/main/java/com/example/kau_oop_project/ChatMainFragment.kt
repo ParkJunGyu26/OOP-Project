@@ -13,8 +13,7 @@ import android.content.res.ColorStateList
 import android.graphics.Color
 
 class ChatMainFragment : Fragment() {
-    private var _binding: FragmentChatMainBinding? = null
-    private val binding get() = _binding!!
+    private var binding: FragmentChatMainBinding? = null
     private lateinit var pagerAdapter: ChatPagerAdapter
 
     /**
@@ -25,9 +24,9 @@ class ChatMainFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentChatMainBinding.inflate(inflater, container, false)
-        return binding.root
+    ): View? {
+        binding = FragmentChatMainBinding.inflate(inflater)
+        return binding?.root
     }
 
     /**
@@ -46,53 +45,22 @@ class ChatMainFragment : Fragment() {
      */
     private fun setupViewPager() {
         pagerAdapter = ChatPagerAdapter(this)
-        binding.viewPager.apply {
+        binding?.viewPager?.apply {
             adapter = pagerAdapter
             isUserInputEnabled = false  // 스와이프 비활성화
         }
     }
 
     /**
-     * 채팅 버튼들의 클릭 이벤트 설정
      * 일반 채팅과 오픈 채팅 전환 기능 구현
      */
     private fun setupButtons() {
-        binding.btnChat.setOnClickListener {
-            binding.viewPager.currentItem = 0
-            updateButtonStyle(false)
+        binding?.btnChat?.setOnClickListener {
+            binding?.viewPager?.currentItem = 0
         }
         
-        binding.btnOpenChat.setOnClickListener {
-            binding.viewPager.currentItem = 1
-            updateButtonStyle(true)
-        }
-    }
-
-    /**
-     * 채팅 타입에 따른 버튼 스타일 업데이트
-     * @param isOpenChat true일 경우 오픈채팅, false일 경우 일반채팅 스타일 적용
-     */
-    private fun updateButtonStyle(isOpenChat: Boolean) {
-        binding.btnChat.apply {
-            backgroundTintList = ColorStateList.valueOf(
-                if (!isOpenChat) Color.parseColor("#3C82F5") 
-                else Color.parseColor("#E2ECFE")
-            )
-            setTextColor(
-                if (!isOpenChat) Color.WHITE 
-                else Color.parseColor("#3C82F5")
-            )
-        }
-        
-        binding.btnOpenChat.apply {
-            backgroundTintList = ColorStateList.valueOf(
-                if (isOpenChat) Color.parseColor("#3C82F5") 
-                else Color.parseColor("#E2ECFE")
-            )
-            setTextColor(
-                if (isOpenChat) Color.WHITE 
-                else Color.parseColor("#3C82F5")
-            )
+        binding?.btnOpenChat?.setOnClickListener {
+            binding?.viewPager?.currentItem = 1
         }
     }
 
@@ -102,6 +70,6 @@ class ChatMainFragment : Fragment() {
      */
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null
+        binding = null
     }
 }
