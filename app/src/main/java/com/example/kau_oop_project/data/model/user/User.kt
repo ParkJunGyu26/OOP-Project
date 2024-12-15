@@ -1,9 +1,11 @@
-package com.example.kau_oop_project.data.model
+package com.example.kau_oop_project.data.model.user
 
-data class user(
-    val uid: String="",
-    var userEmail: String="",
-    var school: String="",
-    var name: String="",
-    var major: String=""
+data class User(
+    val uid: String = "",
+    val userEmail: String = "",
+    val password: String = "",
+    val school: String = "",
+    val name: String = "",
+    val major: String = "",
+    val profileImageUrl: String = ""
 )
