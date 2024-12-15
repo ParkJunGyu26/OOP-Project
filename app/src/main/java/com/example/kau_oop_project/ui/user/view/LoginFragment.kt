@@ -8,14 +8,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.kau_oop_project.R
+import com.example.kau_oop_project.data.model.response.LoginResponse
+import com.example.kau_oop_project.data.model.user.User
 import com.example.kau_oop_project.databinding.FragmentLoginBinding
 import com.example.kau_oop_project.ui.user.viewmodel.LoginViewModel
+import com.example.kau_oop_project.ui.user.viewmodel.UserViewModel
 
 class LoginFragment : Fragment() {
-    val viewModel: LoginViewModel by activityViewModels() // 로그인은 전체를 아우르기 때문에 activityViewModel 사용
-    var binding: FragmentLoginBinding? = null
+    private val loginViewModel: LoginViewModel by viewModels()  // activityViewModels()에서 변경
+    private val userViewModel: UserViewModel by activityViewModels()  // 로그인은 전체를 아우르기 때문에 activityViewModel 사용
+    private var binding: FragmentLoginBinding? = null
 
     // 프래그먼트(뷰) 생성 전 세팅
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,7 +51,7 @@ class LoginFragment : Fragment() {
                 val inputPassword = editPassword.text.toString()
 
                 if (inputEmail.isBlank() || inputPassword.isBlank()) txtError.text = "이메일과 비밀번호를 모두 입력해주세요."
-                else viewModel.verifyUser(inputEmail, inputPassword)
+                else loginViewModel.verifyUser(inputEmail, inputPassword)
             }
 
             btnLoginToRegi.setOnClickListener {findNavController().navigate(R.id.action_loginFragment_to_registerFragment)}
@@ -60,7 +65,7 @@ class LoginFragment : Fragment() {
                 override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
                 override fun afterTextChanged(p0: Editable?) {
                     p0?.toString()?.let { email ->
-                        viewModel.validateEmailFormat(email)
+                        loginViewModel.validateEmailFormat(email)
                     }
                 }
             })
@@ -68,12 +73,20 @@ class LoginFragment : Fragment() {
     }
 
     private fun observeViewModel() {
-        viewModel.loginResult.observe(viewLifecycleOwner) { isSuccess ->
-            if (isSuccess) findNavController().navigate(R.id.action_loginFragment_to_mypageFragment)
-            else binding?.txtError?.text = "회원 정보가 틀렸습니다. 다시 로그인해주세요."
+        loginViewModel.loginResult.observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is LoginResponse.Success -> {
+                    userViewModel.loginUser(result)
+                    findNavController().navigate(R.id.action_loginFragment_to_mypageFragment)
+                }
+                is LoginResponse.Error -> {
+                    binding?.txtError?.text = "이메일 또는 비밀번호가 올바르지 않습니다."
+                    result.logError()
+                }
+            }
         }
 
-        viewModel.emailCheck.observe(viewLifecycleOwner) { state ->
+        loginViewModel.emailCheck.observe(viewLifecycleOwner) { state ->
             binding?.apply {
 
                 txtError.apply {

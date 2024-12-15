@@ -1,5 +1,7 @@
 package com.example.kau_oop_project.data.model
 
+import com.example.kau_oop_project.data.model.user.User
+
 // PostContent 데이터 클래스
 data class PostContent(
     val type: ContentType=ContentType.TEXT,  // ContentType Enum 사용
@@ -14,7 +16,7 @@ enum class ContentType {
 
 // Reply 데이터 클래스
 data class Reply(
-    val replyAuthor: user=user("","","","",""),
+    val replyAuthor: User = User("","","","",""),
     val replyContent: String="",
     val replyTimeStamp: Long=0
 )
@@ -30,7 +32,7 @@ data class Post(
     val postDBId:String="",
     val postTag: String="",
     val postTitle: String="",
-    val postAuthor: user=user("","","","",""),
+    val postAuthor: User = User("","","","",""),
     var postRecommendCount:Int=0,
     var postViewCount:Int=0,
     val postContent: List<PostContent> = emptyList(),
