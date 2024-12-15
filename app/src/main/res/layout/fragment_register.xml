@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".RegisterFragment">
+    tools:context=".ui.user.view.RegisterFragment">
 
     <TextView
         android:id="@+id/textView4"
@@ -25,38 +25,23 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:drawableLeft="@drawable/baseline_person_24"
+        android:drawablePadding="8dp"
         android:ems="10"
         android:hint="이메일을 입력하세요"
-        android:inputType="text"
+        android:inputType="textEmailAddress"
         android:textSize="20sp"
-        app:layout_constraintBottom_toTopOf="@+id/edit_certificate_number"
+        app:layout_constraintBottom_toTopOf="@+id/edit_regi_password"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.525"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView4" />
-
-
-    <EditText
-        android:id="@+id/edit_certificate_number"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="text"
-        android:drawableLeft="@drawable/baseline_key_24"
-        android:hint="이메일 인증번호"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toTopOf="@+id/edit_regi_password"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edit_regi_email" />
 
     <EditText
         android:id="@+id/edit_regi_password"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:inputType="text"
+        android:inputType="textPassword"
         android:drawableLeft="@drawable/baseline_lock_24"
         android:hint="비밀번호를 입력하세요"
         android:textSize="20sp"
@@ -64,16 +49,16 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edit_certificate_number" />
+        app:layout_constraintTop_toBottomOf="@+id/edit_regi_email" />
 
     <EditText
         android:id="@+id/edit_school"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="text"
         android:drawableLeft="@drawable/baseline_school_24"
+        android:ems="10"
         android:hint="학교를 입력하세요"
+        android:inputType="text"
         android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="@+id/edit_name"
         app:layout_constraintEnd_toEndOf="parent"
@@ -137,23 +122,61 @@
     <Button
         android:id="@+id/btn_regi_to_login"
         style="?android:borderlessButtonStyle"
-        android:layout_width="75dp"
-        android:layout_height="41dp"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
         android:layout_marginStart="4dp"
         android:layout_marginBottom="56dp"
         android:text="로그인"
+        android:textColor="#3F51B5"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/textView3" />
 
     <Button
         android:id="@+id/btn_receive_number"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="10dp"
-        android:text="인증하기"
+        android:enabled="false"
+        android:text="중복검사"
+        android:textColor="#3F51B5"
         app:layout_constraintBottom_toBottomOf="@+id/edit_regi_email"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/edit_regi_email" />
+        app:layout_constraintStart_toEndOf="@+id/edit_regi_email"
+        app:layout_constraintTop_toTopOf="@+id/edit_regi_email"
+        app:strokeColor="#3F51B5"
+        app:strokeWidth="1dp" />
+
+    <TextView
+        android:id="@+id/txt_emailVerification"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="3dp"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="@+id/edit_regi_email"
+        app:layout_constraintStart_toStartOf="@+id/edit_regi_email"
+        app:layout_constraintTop_toBottomOf="@+id/edit_regi_email" />
+
+    <TextView
+        android:id="@+id/txt_passwordValidation"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="3dp"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="@+id/edit_regi_password"
+        app:layout_constraintStart_toStartOf="@+id/edit_regi_password"
+        app:layout_constraintTop_toBottomOf="@+id/edit_regi_password" />
+
+    <TextView
+        android:id="@+id/txt_schoolValidation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="3dp"
+        app:layout_constraintEnd_toEndOf="@+id/edit_school"
+        app:layout_constraintStart_toStartOf="@+id/edit_school"
+        app:layout_constraintTop_toBottomOf="@+id/edit_school" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

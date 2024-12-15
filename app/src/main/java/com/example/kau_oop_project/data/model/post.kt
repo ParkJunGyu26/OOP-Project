@@ -1,5 +1,7 @@
 package com.example.kau_oop_project.data.model
 
+import com.example.kau_oop_project.data.model.user.User
+
 // PostContent 데이터 클래스
 data class PostContent(
     val type: ContentType=ContentType.TEXT,  // ContentType Enum 사용

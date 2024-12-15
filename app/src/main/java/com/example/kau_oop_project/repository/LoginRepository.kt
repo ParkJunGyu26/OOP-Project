@@ -1,50 +1,33 @@
 package com.example.kau_oop_project.repository
 
-import com.google.firebase.Firebase
-import com.google.firebase.database.database
+import com.example.kau_oop_project.data.model.response.LoginResponse
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 
-class LoginRepository {
-    val database = Firebase.database
-    val userRef = database.getReference("users")
-
-    suspend fun checkEmail(inputEmail: String?): Boolean {
+class LoginRepository : UserRepository() {
+    suspend fun verifyLogin(email: String, password: String): LoginResponse {
         return withContext(Dispatchers.IO) {
-            inputEmail?.let { email ->
-                val snapshot = userRef.get().await()
+            try {
+                val snapshot = findUserByEmail(email)
+                snapshot?.children?.firstOrNull()?.let { userSnapshot ->
+                    val storedPassword = userSnapshot.child("password").getValue(String::class.java)
 
-                var exists = false
-                snapshot.children.forEach { userSnapshot ->
-                    val userEmail = userSnapshot.child("email").value as? String
-                    if (userEmail == email) {
-                        exists = true
-                        return@forEach
+                    if (storedPassword == password) {
+                        LoginResponse.Success(
+                            uid = userSnapshot.key ?: "",
+                            name = userSnapshot.child("name").getValue(String::class.java) ?: "",
+                            userEmail = email,
+                            school = userSnapshot.child("school").getValue(String::class.java) ?: "",
+                            major = userSnapshot.child("major").getValue(String::class.java) ?: "",
+                            profileImageUrl = userSnapshot.child("profileImageUrl").getValue(String::class.java) ?: ""
+                        )
+                    } else {
+                        LoginResponse.Error.InvalidPassword
                     }
-                }
-                exists
-            } ?: false
-        }
-    }
-
-    // gd
-    suspend fun getPassword(inputEmail: String?, inputPassword: String?): Boolean {
-        return withContext(Dispatchers.IO) {
-            inputEmail?.let { email ->
-                val snapshot = userRef.get().await()
-
-                var isValid = false
-                snapshot.children.forEach { userSnapshot ->
-                    val userEmail = userSnapshot.child("email").value as? String
-                    val userPassword = userSnapshot.child("password").value as? String
-                    if (userEmail == email && userPassword == inputPassword) {
-                        isValid = true
-                        return@forEach
-                    }
-                }
-                isValid
-            } ?: false
+                } ?: LoginResponse.Error.UserNotFound
+            } catch (e: Exception) {
+                LoginResponse.Error.Unknown(e.message ?: "Unknown")
+            }
         }
     }
 }

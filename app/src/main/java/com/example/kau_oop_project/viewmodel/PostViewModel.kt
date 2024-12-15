@@ -5,7 +5,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.kau_oop_project.data.model.ContentType
 import com.example.kau_oop_project.data.model.Post
+import com.example.kau_oop_project.data.model.PostContent
 import com.example.kau_oop_project.data.model.Reply
 import com.example.kau_oop_project.repository.PostRepository
 import kotlinx.coroutines.launch
@@ -25,6 +27,9 @@ class PostViewModel : ViewModel() {
 
     private val _replies = MutableLiveData<List<Reply>>()
     val replies: LiveData<List<Reply>> get() = _replies
+
+    private val _postUploadResult = MutableLiveData<Result<Boolean>>()
+    val postUploadResult: LiveData<Result<Boolean>> get() = _postUploadResult
 
 
     init {
@@ -46,13 +51,31 @@ class PostViewModel : ViewModel() {
     }
 
     // 게시글 업로드
-    fun uploadPost(post: Post) {
+    fun uploadPost(title: String, tag: String, content: String, userUid: String) {
+        // 유효성 검사
+        val validationMessage = when {
+            title.isBlank() -> "제목을 입력해주세요."
+            tag.isBlank() -> "태그를 입력해주세요."
+            content.isBlank() -> "내용을 입력해주세요."
+            userUid.isNullOrBlank() -> "사용자 정보를 찾을 수 없습니다."
+            else -> null
+        }
+
+        // 유효성 검사 통과 시
+        validationMessage?.let {
+            _postUploadResult.value = Result.failure(Exception(it)) // 실패 메시지 전달
+            return
+        }
+
+        // 유효성 검사 통과 후, Repository에 데이터 전달
         viewModelScope.launch {
             try {
-                postRepository.uploadPost(post) // 포스트를 업로드
-                retrievePosts() // 업로드 후 리스트 갱신
+                // Firebase에 게시글 업로드 요청
+                postRepository.uploadPost(title, tag, content, userUid)
+
+                _postUploadResult.value = Result.success(true) // 업로드 성공
             } catch (e: Exception) {
-                Log.e("PostViewModel", "Error uploading post: ${e.message}")
+                _postUploadResult.value = Result.failure(e) // 업로드 실패
             }
         }
     }

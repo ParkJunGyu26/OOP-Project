@@ -1,10 +1,12 @@
 package com.example.kau_oop_project.repository
 
 import android.util.Log
+import com.example.kau_oop_project.data.model.ContentType
 import com.google.firebase.database.FirebaseDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import com.example.kau_oop_project.data.model.Post
+import com.example.kau_oop_project.data.model.PostContent
 import com.example.kau_oop_project.data.model.Reply
 import kotlinx.coroutines.tasks.await
 import java.util.*
@@ -15,7 +17,7 @@ class PostRepository {
     private val postsRef = database.getReference("posts")
     private val repliesRef = database.getReference("replies")
 
-    suspend fun uploadPost(post: Post) {
+    suspend fun uploadPost(title: String, tag: String, content: String, uid: String) {
         withContext(Dispatchers.IO) {
             // Firebase가 생성한 고유 ID
             val databaseId = postsRef.push().key ?: return@withContext
@@ -23,8 +25,22 @@ class PostRepository {
             // timestamp를 현재 시간으로 설정
             val writetenTime = System.currentTimeMillis()
 
-            // 새로운 Post 객체 생성, timestamp가 포함된 post
-            val newPost = post.copy(postId = databaseId, postTimeStamp = writetenTime)
+            // 내용 입력란을 줄 단위로 분리하여 PostContent 리스트 생성
+            val postContents = content.lines().map {
+                PostContent(type = ContentType.TEXT, content = it)
+            }
+            // 새로운 Post 객체 생성
+            val newPost = Post(
+                postId = databaseId,
+                postTag = tag,
+                postTitle = title,
+                postRecommendCount = 0,
+                postViewCount = 0,
+                postAuthorId = uid,
+                postContent = postContents,
+                postReplyIdList = emptyList(),
+                postTimeStamp = writetenTime
+            )
 
             // Firebase에 새로운 Post 저장
             postsRef.child(databaseId).setValue(newPost).await()

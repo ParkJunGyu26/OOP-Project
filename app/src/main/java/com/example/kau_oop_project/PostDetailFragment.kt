@@ -12,7 +12,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.kau_oop_project.data.model.Reply
 import com.example.kau_oop_project.databinding.FragmentPostDetailBinding
-import com.example.kau_oop_project.viewmodel.LoginViewModel
 import com.example.kau_oop_project.viewmodel.PostViewModel
 import java.text.SimpleDateFormat
 import java.util.*

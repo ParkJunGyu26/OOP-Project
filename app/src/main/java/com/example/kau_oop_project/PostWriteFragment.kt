@@ -1,25 +1,23 @@
 package com.example.kau_oop_project
 
-import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
-import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.kau_oop_project.data.model.*
 import com.example.kau_oop_project.databinding.FragmentPostWriteBinding
+import com.example.kau_oop_project.ui.user.viewmodel.UserViewModel
 import com.example.kau_oop_project.viewmodel.PostViewModel
 
 class PostWriteFragment : Fragment() {
 
     private var binding: FragmentPostWriteBinding? = null
     private val postViewModel: PostViewModel by activityViewModels()
+    private val userViewModel: UserViewModel by activityViewModels()
     private val contentList = mutableListOf<PostContent>() // 텍스트와 이미지 관리
 
     override fun onCreateView(
@@ -47,63 +45,40 @@ class PostWriteFragment : Fragment() {
 
     private fun uploadPostAndNavigate() {
         binding?.apply {
-            // 제목 입력란의 텍스트를 가져옴.
             val title = inputTitle.text.toString()
-            // 주제 선택 스피너에서 선택된 값을 가져온다. 아직 미구현
             val tag = inputTag.text.toString()
+            val content = inputContent.text.toString()
+            var isToasted = false
 
-            // 제목이 비어 있는 경우 사용자에게 채워넣으라는 알림을 보냄
-            if (title.isBlank()) {
-                Toast.makeText(requireContext(), "제목을 입력해주세요.", Toast.LENGTH_SHORT).show()
-                return
-            }
+            // currentUser UID 가져오기
+            userViewModel.currentUser.value?.let { user ->
+                // ViewModel에 업로드 요청
+                postViewModel.uploadPost(title, tag, content, user.uid)
 
-            // 태그가 비어 있는 경우 사용자에게 채워넣으라는 알림을 보냄
-            if (tag.isBlank()) {
-                Toast.makeText(requireContext(), "태그를 입력해주세요.", Toast.LENGTH_SHORT).show()
-                return
-            }
-
-            // 내용 입력란이 비어 있는지 확인하고, 비어 있으면 사용자에게 채워넣으라는 알림을 보냄.
-            if (inputContent.text.toString().isBlank()) {
-                Toast.makeText(requireContext(), "내용을 입력해주세요.", Toast.LENGTH_SHORT).show()
-                return
-            }
-
-            // 내용 입력란의 텍스트를 줄 단위로 분리
-            val contentLines = inputContent.text.toString().lines()
-
-            // 각 줄을 분석하여 PostContent 객체의 리스트를 생성
-            val postContents = contentLines.mapNotNull { line ->
-                // 추후 이미지 업로드 기능 구현 시, true 조건을 설정해 이미지 처리합니다.
-                if (false) {
-                    PostContent(type = ContentType.IMAGE, content = line)
-                } else {
-                    PostContent(type = ContentType.TEXT, content = line)
+                // 업로드 결과 관찰
+                postViewModel.postUploadResult.observe(viewLifecycleOwner) { result ->
+                    if (!isToasted) {
+                        isToasted=true
+                        when {
+                            result.isSuccess -> {
+                                // 성공 시
+                                Toast.makeText(requireContext(),"게시글이 등록되었습니다.",Toast.LENGTH_SHORT).show()
+                                findNavController().navigate(R.id.postListFragment)
+                            }
+                            result.isFailure -> {
+                                // 실패 시
+                                val exception = result.exceptionOrNull()
+                                Toast.makeText(requireContext(),"${exception?.message}",Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    }
                 }
+            } ?: run {
+                Toast.makeText(requireContext(), "로그인된 사용자가 없습니다.", Toast.LENGTH_SHORT).show()
             }
-
-            // Post 객체를 생성
-            val post = Post(
-                postId = "", // 게시글이 갖는 고유 ID, DB에 삽입될 때 값이 생긴다.
-                postTag = tag, // 사용자가 선택한 주제 태그
-                postTitle = title, // 입력된 제목
-                postRecommendCount = 0, // 추천 수는 초기값으로 0 설정
-                postViewCount=0, // 초기 조회수는 0
-                postAuthorId="",
-                postContent = postContents, // PostContent 리스트 전달
-                postReplyIdList = emptyList(), // 댓글 리스트는 초기값으로 빈 리스트로 설정
-                postTimeStamp = System.currentTimeMillis() // 현재 시간을 타임스탬프로 기록
-            )
-
-            // ViewModel을 사용하여 Firebase에 Post 데이터를 업로드.
-            postViewModel.uploadPost(post)
-
-            // 업로드 성공 시 사용자에게 알림을 표시하고, 게시글 목록 화면으로 이동합니다.
-            Toast.makeText(requireContext(), "게시글이 등록되었습니다.", Toast.LENGTH_SHORT).show()
-            findNavController().navigate(R.id.postListFragment) // PostListFragment로 이동
         }
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()
