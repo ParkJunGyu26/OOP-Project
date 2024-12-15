@@ -20,7 +20,7 @@ class PostListAdapter(private val postViewModel: PostViewModel) : RecyclerView.A
     inner class ViewHolder(private val binding: ItemPostBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(post: Post) {
             binding.postTitle.text = post.postTitle
-            binding.postTag.text = post.postTag
+            binding.postTag.text = "[ ${post.postTag} ]"
             binding.postImageType.setImageResource(R.drawable.ic_image)
 
             itemView.setOnClickListener {

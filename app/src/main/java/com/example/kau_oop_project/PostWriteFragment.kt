@@ -48,9 +48,9 @@ class PostWriteFragment : Fragment() {
     private fun uploadPostAndNavigate() {
         binding?.apply {
             // 제목 입력란의 텍스트를 가져옴.
-            val title = titleInput.text.toString()
+            val title = inputTitle.text.toString()
             // 주제 선택 스피너에서 선택된 값을 가져온다. 아직 미구현
-            val tag = subjectSpinner.selectedItem?.toString() ?: ""
+            val tag = inputTag.text.toString()
 
             // 제목이 비어 있는 경우 사용자에게 채워넣으라는 알림을 보냄
             if (title.isBlank()) {
@@ -58,14 +58,20 @@ class PostWriteFragment : Fragment() {
                 return
             }
 
+            // 태그가 비어 있는 경우 사용자에게 채워넣으라는 알림을 보냄
+            if (tag.isBlank()) {
+                Toast.makeText(requireContext(), "태그를 입력해주세요.", Toast.LENGTH_SHORT).show()
+                return
+            }
+
             // 내용 입력란이 비어 있는지 확인하고, 비어 있으면 사용자에게 채워넣으라는 알림을 보냄.
-            if (contentInput.text.toString().isBlank()) {
+            if (inputContent.text.toString().isBlank()) {
                 Toast.makeText(requireContext(), "내용을 입력해주세요.", Toast.LENGTH_SHORT).show()
                 return
             }
 
             // 내용 입력란의 텍스트를 줄 단위로 분리
-            val contentLines = contentInput.text.toString().lines()
+            val contentLines = inputContent.text.toString().lines()
 
             // 각 줄을 분석하여 PostContent 객체의 리스트를 생성
             val postContents = contentLines.mapNotNull { line ->
@@ -79,21 +85,14 @@ class PostWriteFragment : Fragment() {
 
             // Post 객체를 생성
             val post = Post(
-                postId = "", // 게시글이 갖는 고유 ID, 아직은 미사용, 고민 중..
-                postDBId = "", // 추가 데이터베이스 ID 필드 (필요한 경우 활용 가능), 마찬가지로 아직은 미사용
+                postId = "", // 게시글이 갖는 고유 ID, DB에 삽입될 때 값이 생긴다.
                 postTag = tag, // 사용자가 선택한 주제 태그
                 postTitle = title, // 입력된 제목
                 postRecommendCount = 0, // 추천 수는 초기값으로 0 설정
                 postViewCount=0, // 초기 조회수는 0
-                postAuthor = user( // 나중에 user 파트가 완성되면 nowUser이 될 것
-                    uid = "adminUid", // 작성자 고유 ID
-                    userEmail = "admin@naver.com", // 작성자 이메일
-                    school = "KAU", // 작성자 학교
-                    name = "김어드민", // 작성자 이름
-                    major = "관리자" // 작성자 전공
-                ),
+                postAuthorId="",
                 postContent = postContents, // PostContent 리스트 전달
-                postReplyList = emptyList(), // 댓글 리스트는 초기값으로 빈 리스트로 설정
+                postReplyIdList = emptyList(), // 댓글 리스트는 초기값으로 빈 리스트로 설정
                 postTimeStamp = System.currentTimeMillis() // 현재 시간을 타임스탬프로 기록
             )
 

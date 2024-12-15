@@ -22,43 +22,56 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <Spinner
-            android:id="@+id/subject_spinner"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            app:layout_constraintStart_toStartOf="parent"
-            tools:layout_editor_absoluteY="5dp" />
-
         <EditText
-            android:id="@+id/title_input"
+            android:id="@+id/input_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:layout_marginTop="2dp"
-            android:layout_marginBottom="2dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="5dp"
             android:background="#A9A9A9"
+            android:singleLine="true"
+            android:maxLines="1"
             android:hint="제목을 입력하세요"
+            android:imeOptions="actionDone"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/subject_spinner"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/input_tag"
             app:layout_constraintVertical_bias="1.0" />
+
+        <EditText
+            android:id="@+id/input_tag"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:background="#A9A9A9"
+            android:singleLine="true"
+            android:maxLines="1"
+            android:hint="태그를 설정해보세요!"
+            android:imeOptions="actionDone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="5dp"
+        app:layout_constraintBottom_toTopOf="@+id/button_submit"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout2"
         tools:layout_editor_absoluteX="12dp">
 
         <EditText
-            android:id="@+id/content_input"
+            android:id="@+id/input_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
             android:layout_marginEnd="5dp"
-            android:background="#A9A9A9"
             android:gravity="top"
             android:hint="내용을 입력하세요."
             android:padding="8dp" />
@@ -73,19 +86,33 @@
         app:layout_constraintTop_toBottomOf="@+id/constraintLayout4"
         tools:layout_editor_absoluteX="16dp">
 
-        <Button
-            android:id="@+id/button_bold"
+        <ImageButton
+            android:id="@+id/btn_bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="굵"
-            android:textSize="12sp" />
+            android:layout_weight="1"
+            android:src="@android:drawable/btn_star" />
 
-        <Button
-            android:id="@+id/button_image"
+        <ImageButton
+            android:id="@+id/btn_lin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="이"
-            android:textSize="12sp" />
+            android:layout_weight="1"
+            android:src="@android:drawable/btn_star" />
+
+        <ImageButton
+            android:id="@+id/btn_chwiso"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@android:drawable/btn_star" />
+
+        <ImageButton
+            android:id="@+id/btn_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@android:drawable/btn_star" />
 
     </LinearLayout>
 
