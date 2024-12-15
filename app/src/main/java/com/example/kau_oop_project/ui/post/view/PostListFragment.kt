@@ -1,4 +1,4 @@
-package com.example.kau_oop_project
+package com.example.kau_oop_project.ui.post.view
 
 import android.os.Bundle
 import android.util.Log
@@ -11,12 +11,11 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.kau_oop_project.R
 import com.example.kau_oop_project.databinding.FragmentPostListBinding
-import com.example.kau_oop_project.viewmodel.PostViewModel
-import com.example.kau_oop_project.data.model.Post
+import com.example.kau_oop_project.ui.post.viewmodel.PostViewModel
 
 class PostListFragment : Fragment() {
 

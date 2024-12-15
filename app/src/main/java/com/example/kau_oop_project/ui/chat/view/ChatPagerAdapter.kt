@@ -1,7 +1,6 @@
-package com.example.kau_oop_project
+package com.example.kau_oop_project.ui.chat.view
 
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
 
 /**
@@ -23,4 +22,4 @@ class ChatPagerAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {
     override fun createFragment(position: Int): Fragment {
         return ChatListFragment.newInstance(position == 1)
     }
-} 
+}

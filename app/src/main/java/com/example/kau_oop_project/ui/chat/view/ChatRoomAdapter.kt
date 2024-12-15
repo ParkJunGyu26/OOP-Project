@@ -1,4 +1,4 @@
-package com.example.kau_oop_project
+package com.example.kau_oop_project.ui.chat.view
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

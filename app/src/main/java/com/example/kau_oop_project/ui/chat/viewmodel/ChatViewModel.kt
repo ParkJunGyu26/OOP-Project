@@ -1,4 +1,4 @@
-package com.example.kau_oop_project.viewmodel
+package com.example.kau_oop_project.ui.chat.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

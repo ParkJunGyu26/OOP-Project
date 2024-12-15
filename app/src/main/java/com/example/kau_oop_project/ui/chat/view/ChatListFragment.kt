@@ -1,17 +1,17 @@
-package com.example.kau_oop_project
+package com.example.kau_oop_project.ui.chat.view
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.kau_oop_project.databinding.FragmentChatListBinding
+import com.example.kau_oop_project.R
 import com.example.kau_oop_project.data.model.chat.ChatRoom
-import com.google.firebase.auth.FirebaseAuth
-import androidx.fragment.app.viewModels
-import com.example.kau_oop_project.viewmodel.ChatViewModel
+import com.example.kau_oop_project.databinding.FragmentChatListBinding
+import com.example.kau_oop_project.ui.chat.viewmodel.ChatViewModel
 
 class ChatListFragment : Fragment() {
     private var binding: FragmentChatListBinding? = null

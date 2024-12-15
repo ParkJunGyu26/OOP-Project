@@ -1,4 +1,4 @@
-package com.example.kau_oop_project.viewmodel
+package com.example.kau_oop_project.ui.chat.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -7,7 +7,6 @@ import androidx.lifecycle.viewModelScope
 import com.example.kau_oop_project.data.model.chat.ChatMessage
 import com.example.kau_oop_project.repository.ChatDetailRepository
 import kotlinx.coroutines.launch
-import com.example.kau_oop_project.viewmodel.ChatDetailViewModel
 
 class ChatDetailViewModel : ViewModel() {
     private val repository = ChatDetailRepository()

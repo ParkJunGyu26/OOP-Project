@@ -1,17 +1,13 @@
-package com.example.kau_oop_project
+package com.example.kau_oop_project.ui.post.view
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.os.Bundle
-import android.widget.Toast
-import androidx.lifecycle.LiveData
-import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.kau_oop_project.databinding.ItemPostBinding
 import com.example.kau_oop_project.data.model.Post
-import androidx.navigation.fragment.findNavController
-import com.example.kau_oop_project.viewmodel.PostViewModel
+import com.example.kau_oop_project.R
+import com.example.kau_oop_project.ui.post.viewmodel.PostViewModel
 
 class PostListAdapter(private val postViewModel: PostViewModel) : RecyclerView.Adapter<PostListAdapter.ViewHolder>() {
 

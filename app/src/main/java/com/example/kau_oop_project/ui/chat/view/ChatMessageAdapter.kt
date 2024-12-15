@@ -1,4 +1,4 @@
-package com.example.kau_oop_project
+package com.example.kau_oop_project.ui.chat.view
 
 import android.text.format.DateFormat
 import android.view.LayoutInflater
@@ -6,8 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.kau_oop_project.data.model.chat.ChatMessage
 import com.example.kau_oop_project.R
+import com.example.kau_oop_project.data.model.chat.ChatMessage
 
 class ChatMessageAdapter(private val currentUserId: String) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {

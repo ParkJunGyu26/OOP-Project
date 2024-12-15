@@ -1,10 +1,11 @@
-package com.example.kau_oop_project
+package com.example.kau_oop_project.ui.post.view
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.kau_oop_project.R
 
 class ReplyAdapter(private val replyList: List<Pair<String, String>>) :
     RecyclerView.Adapter<ReplyAdapter.ReplyViewHolder>() {

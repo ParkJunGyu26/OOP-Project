@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.kau_oop_project.data.model.response.LoginResponse
-import com.example.kau_oop_project.data.model.user.User
+import com.example.kau_oop_project.data.model.User
 
 class UserViewModel : ViewModel() {
     private val _currentUser = MutableLiveData<User?>()

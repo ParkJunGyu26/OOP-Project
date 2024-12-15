@@ -1,4 +1,4 @@
-package com.example.kau_oop_project
+package com.example.kau_oop_project.ui.chat.view
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.kau_oop_project.databinding.FragmentChatDetailBinding
-import com.example.kau_oop_project.viewmodel.ChatDetailViewModel
+import com.example.kau_oop_project.ui.chat.viewmodel.ChatDetailViewModel
 
 class ChatDetailFragment : Fragment() {
 

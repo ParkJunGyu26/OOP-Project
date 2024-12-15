@@ -1,16 +1,11 @@
-package com.example.kau_oop_project
+package com.example.kau_oop_project.ui.chat.view
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.findNavController
-import androidx.viewpager2.widget.ViewPager2
 import com.example.kau_oop_project.databinding.FragmentChatMainBinding
-import com.example.kau_oop_project.data.model.chat.ChatRoom
-import android.content.res.ColorStateList
-import android.graphics.Color
 
 class ChatMainFragment : Fragment() {
     private var binding: FragmentChatMainBinding? = null
@@ -58,7 +53,7 @@ class ChatMainFragment : Fragment() {
         binding?.btnChat?.setOnClickListener {
             binding?.viewPager?.currentItem = 0
         }
-        
+
         binding?.btnOpenChat?.setOnClickListener {
             binding?.viewPager?.currentItem = 1
         }

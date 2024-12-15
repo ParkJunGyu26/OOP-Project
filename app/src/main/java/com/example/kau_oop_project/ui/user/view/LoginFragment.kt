@@ -12,7 +12,6 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.kau_oop_project.R
 import com.example.kau_oop_project.data.model.response.LoginResponse
-import com.example.kau_oop_project.data.model.user.User
 import com.example.kau_oop_project.databinding.FragmentLoginBinding
 import com.example.kau_oop_project.ui.user.viewmodel.LoginViewModel
 import com.example.kau_oop_project.ui.user.viewmodel.UserViewModel

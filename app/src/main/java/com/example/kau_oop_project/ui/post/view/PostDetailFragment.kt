@@ -1,4 +1,4 @@
-package com.example.kau_oop_project
+package com.example.kau_oop_project.ui.post.view
 
 import android.app.AlertDialog
 import android.os.Bundle
@@ -8,11 +8,10 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.kau_oop_project.data.model.Reply
 import com.example.kau_oop_project.databinding.FragmentPostDetailBinding
-import com.example.kau_oop_project.viewmodel.PostViewModel
+import com.example.kau_oop_project.ui.post.viewmodel.PostViewModel
 import java.text.SimpleDateFormat
 import java.util.*
 

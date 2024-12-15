@@ -1,6 +1,6 @@
 package com.example.kau_oop_project.repository
 
-import com.example.kau_oop_project.data.model.user.User
+import com.example.kau_oop_project.data.model.User
 import com.google.firebase.Firebase
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.database

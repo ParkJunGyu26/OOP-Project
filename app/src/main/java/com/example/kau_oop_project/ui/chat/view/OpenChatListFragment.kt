@@ -1,4 +1,4 @@
-package com.example.kau_oop_project
+package com.example.kau_oop_project.ui.chat.view
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -23,4 +23,4 @@ class OpenChatListFragment : Fragment() {
         super.onDestroyView()
         binding = null
     }
-} 
+}

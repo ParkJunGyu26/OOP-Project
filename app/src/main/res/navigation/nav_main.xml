@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/chatMainFragment"
-        android:name="com.example.kau_oop_project.ChatMainFragment"
+        android:name="com.example.kau_oop_project.ui.chat.view.ChatMainFragment"
         android:label="fragment_chat_main"
         tools:layout="@layout/fragment_chat_main">
         <action
@@ -55,7 +55,7 @@
     </fragment>
     <fragment
         android:id="@+id/updateMypageFragment"
-        android:name="com.example.kau_oop_project.updateMypageFragment"
+        android:name="com.example.kau_oop_project.ui.user.view.updateMypageFragment"
         android:label="fragment_update_mypage"
         tools:layout="@layout/fragment_update_mypage" >
         <action
@@ -64,7 +64,7 @@
     </fragment>
     <fragment
         android:id="@+id/myPostLogFragment"
-        android:name="com.example.kau_oop_project.myPostLogFragment"
+        android:name="com.example.kau_oop_project.ui.user.view.myPostLogFragment"
         android:label="fragment_my_log"
         tools:layout="@layout/fragment_my_post_log" >
         <action
@@ -76,7 +76,7 @@
     </fragment>
     <fragment
         android:id="@+id/myCommentLogFragment"
-        android:name="com.example.kau_oop_project.myCommentLogFragment"
+        android:name="com.example.kau_oop_project.ui.user.view.myCommentLogFragment"
         android:label="fragment_my_comment_log"
         tools:layout="@layout/fragment_my_comment_log" >
         <action
@@ -88,7 +88,7 @@
     </fragment>
     <fragment
         android:id="@+id/myScrapLogFragment"
-        android:name="com.example.kau_oop_project.myScrapLogFragment"
+        android:name="com.example.kau_oop_project.ui.user.view.myScrapLogFragment"
         android:label="fragment_my_scrap_log"
         tools:layout="@layout/fragment_my_scrap_log" >
         <action
@@ -100,7 +100,7 @@
     </fragment>
     <fragment
         android:id="@+id/chatListFragment"
-        android:name="com.example.kau_oop_project.ChatListFragment"
+        android:name="com.example.kau_oop_project.ui.chat.view.ChatListFragment"
         android:label="fragment_chat_list"
         tools:layout="@layout/fragment_chat_list">
         <action
@@ -110,13 +110,13 @@
 
     <fragment
         android:id="@+id/chatDetailFragment"
-        android:name="com.example.kau_oop_project.ChatDetailFragment"
+        android:name="com.example.kau_oop_project.ui.chat.view.ChatDetailFragment"
         android:label="fragment_chat_detail"
         tools:layout="@layout/fragment_chat_detail">
     </fragment>
     <fragment
         android:id="@+id/postDetailFragment"
-        android:name="com.example.kau_oop_project.PostDetailFragment"
+        android:name="com.example.kau_oop_project.ui.post.view.PostDetailFragment"
         android:label="PostDetail"
         tools:layout="@layout/fragment_post_detail" >
         <action
@@ -125,7 +125,7 @@
     </fragment>
     <fragment
         android:id="@+id/postListFragment"
-        android:name="com.example.kau_oop_project.PostListFragment"
+        android:name="com.example.kau_oop_project.ui.post.view.PostListFragment"
         android:label="PostList"
         tools:layout="@layout/fragment_post_list" >
         <action
@@ -137,7 +137,7 @@
     </fragment>
     <fragment
         android:id="@+id/postWriteFragment"
-        android:name="com.example.kau_oop_project.PostWriteFragment"
+        android:name="com.example.kau_oop_project.ui.post.view.PostWriteFragment"
         android:label="PostWrite"
         tools:layout="@layout/fragment_post_write" >
         <action

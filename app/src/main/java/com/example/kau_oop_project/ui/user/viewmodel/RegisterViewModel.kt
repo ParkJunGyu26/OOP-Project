@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.kau_oop_project.data.model.user.User
+import com.example.kau_oop_project.data.model.User
 import com.example.kau_oop_project.data.model.response.RegisterResponse
 import com.example.kau_oop_project.repository.RegisterRepository
 import com.example.kau_oop_project.data.validator.RegisterValidator

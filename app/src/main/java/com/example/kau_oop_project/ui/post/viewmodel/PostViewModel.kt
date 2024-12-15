@@ -1,13 +1,11 @@
-package com.example.kau_oop_project.viewmodel
+package com.example.kau_oop_project.ui.post.viewmodel
 
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.kau_oop_project.data.model.ContentType
 import com.example.kau_oop_project.data.model.Post
-import com.example.kau_oop_project.data.model.PostContent
 import com.example.kau_oop_project.data.model.Reply
 import com.example.kau_oop_project.repository.PostRepository
 import kotlinx.coroutines.launch

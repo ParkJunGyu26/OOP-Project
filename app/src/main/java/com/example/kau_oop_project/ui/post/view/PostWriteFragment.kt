@@ -1,4 +1,4 @@
-package com.example.kau_oop_project
+package com.example.kau_oop_project.ui.post.view
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,10 +8,11 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import com.example.kau_oop_project.R
 import com.example.kau_oop_project.data.model.*
 import com.example.kau_oop_project.databinding.FragmentPostWriteBinding
 import com.example.kau_oop_project.ui.user.viewmodel.UserViewModel
-import com.example.kau_oop_project.viewmodel.PostViewModel
+import com.example.kau_oop_project.ui.post.viewmodel.PostViewModel
 
 class PostWriteFragment : Fragment() {
 

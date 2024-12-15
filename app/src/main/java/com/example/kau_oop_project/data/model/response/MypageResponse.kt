@@ -1,7 +1,7 @@
 package com.example.kau_oop_project.data.model.response
 
 import android.util.Log
-import com.example.kau_oop_project.data.model.user.User
+import com.example.kau_oop_project.data.model.User
 
 sealed class MypageResponse : CommonResponse() {
     class Success(
