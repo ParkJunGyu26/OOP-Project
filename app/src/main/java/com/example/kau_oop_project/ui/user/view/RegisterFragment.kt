@@ -14,6 +14,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.widget.Toast
 import com.example.kau_oop_project.R
+import com.example.kau_oop_project.data.model.response.RegisterResponse
 
 class RegisterFragment : Fragment() {
     private var binding: FragmentRegisterBinding? = null
@@ -141,6 +142,8 @@ class RegisterFragment : Fragment() {
                     text = state.school.message
                     setTextColor(if (state.school.isValid) Color.BLUE else Color.RED)
                 }
+
+                btnReceiveNumber.isEnabled = state.email.isValid
             }
         }
 
@@ -148,15 +151,21 @@ class RegisterFragment : Fragment() {
             binding?.btnRegister?.isEnabled = isEnabled
         }
 
-        viewModel.registerResult.observe(viewLifecycleOwner) { isSuccess ->
-            context?.let { ctx ->
-                val message = if (isSuccess) "회원가입이 완료되었습니다." else "회원가입에 실패했습니다."
-                Toast.makeText(ctx, message, Toast.LENGTH_SHORT).show()
-                
-                if (isSuccess) {
+        viewModel.registerResult.observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is RegisterResponse.Success -> {
+                    Toast.makeText(context, "회원가입이 완료되었습니다.", Toast.LENGTH_SHORT).show()
                     view?.postDelayed({
                         findNavController().navigate(R.id.action_registerFragment_to_loginFragment)
                     }, 1000)
+                }
+                is RegisterResponse.Error -> {
+                    val message = when(result) {
+                        is RegisterResponse.Error.DuplicateEmail -> "이미 존재하는 이메일입니다."
+                        is RegisterResponse.Error.Unknown -> "회원가입 중 오류가 발생했습니다."
+                    }
+                    Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                    result.logError()
                 }
             }
         }
