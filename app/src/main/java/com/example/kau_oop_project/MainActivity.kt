@@ -22,7 +22,7 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(binding.toolbar)
         
         val appBarConfiguration = AppBarConfiguration(
-            setOf(R.id.postListFragment,R.id.mypageFragment)
+            setOf(R.id.postListFragment,R.id.mypageFragment,R.id.chatMainFragment)
         )
         val navController=binding.fragmentContainerView.getFragment<NavHostFragment>().navController
         setupActionBarWithNavController(navController,appBarConfiguration)

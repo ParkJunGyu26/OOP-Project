@@ -16,26 +16,26 @@ enum class ContentType {
 
 // Reply 데이터 클래스
 data class Reply(
-    val replyAuthor: User = User("","","","",""),
+    val replyId:String="",
+    val replyParentPostId: String="",
+    val replyAuthorId: String="",
     val replyContent: String="",
     val replyTimeStamp: Long=0
 )
 
 // ReplyList 데이터 클래스
-data class ReplyList(
-    val replyList: List<Reply> = emptyList()
-)
+
 
 // Post 데이터 클래스
 data class Post(
-    val postId: String="",
-    val postDBId:String="",
+    val postId:String="",
     val postTag: String="",
     val postTitle: String="",
-    val postAuthor: User = User("","","","",""),
+    val postAuthorId: String="",
     var postRecommendCount:Int=0,
     var postViewCount:Int=0,
     val postContent: List<PostContent> = emptyList(),
-    val postReplyList: List<Reply> = emptyList(),
+    val postReplyIdList: List<String> = emptyList(),
     val postTimeStamp: Long=0
 )
+
