@@ -1,23 +1,28 @@
 package com.example.kau_oop_project.ui.chat.view
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.kau_oop_project.R
-import com.example.kau_oop_project.data.model.chat.ChatRoom
 import com.example.kau_oop_project.databinding.FragmentChatListBinding
 import com.example.kau_oop_project.ui.chat.viewmodel.ChatViewModel
+import com.google.firebase.auth.FirebaseAuth
+import com.example.kau_oop_project.data.model.ChatRoom
+import com.example.kau_oop_project.ui.user.viewmodel.UserViewModel
 
 class ChatListFragment : Fragment() {
     private var binding: FragmentChatListBinding? = null
     private lateinit var chatAdapter: ChatRoomAdapter
     private var isOpenChat: Boolean = false
     private val chatViewModel: ChatViewModel by viewModels()
+    private val userViewModel: UserViewModel by activityViewModels()
 
     /**
      * 채팅 목록 Fragment 인스턴스 생성
@@ -52,14 +57,28 @@ class ChatListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         isOpenChat = arguments?.getBoolean("isOpenChat") ?: false
         setupRecyclerView()
-        loadChatList()
-//        val currentUserId = FirebaseAuth.getInstance().currentUser?.uid
-//        chatViewModel.loadChatRooms(currentUserId)   // Firebase에서 채팅방 불러오기
-//
-//        chatViewModel.chatRooms.observe(viewLifecycleOwner) { rooms ->
-//            // 불러온 채팅방 목록을 어댑터에 반영
-//            chatAdapter.submitList(rooms)
-//        }
+
+        // UserViewModel에서 현재 로그인한 사용자 정보 가져오기
+        val currentUserId = userViewModel.currentUser.value?.uid
+        Log.d("ChatListFragment", "Current User UID (from UserViewModel): $currentUserId")
+
+        // currentUserId가 null이 아닌 경우에만 채팅방 로드
+        if (currentUserId != null) {
+            chatViewModel.loadChatRooms(currentUserId)
+        }
+
+        // ViewModel에서 LiveData 구독
+        chatViewModel.chatRooms.observe(viewLifecycleOwner) { rooms ->
+            Log.d("ChatListFragment", "Rooms loaded: $rooms")
+            if (rooms.isEmpty()) {
+                binding?.emptyView?.visibility = View.VISIBLE
+                binding?.recyclerView?.visibility = View.GONE
+            } else {
+                binding?.emptyView?.visibility = View.GONE
+                binding?.recyclerView?.visibility = View.VISIBLE
+                chatAdapter.submitList(rooms)
+            }
+        }
     }
 
     /**
@@ -67,15 +86,10 @@ class ChatListFragment : Fragment() {
      */
     private fun setupRecyclerView() {
         chatAdapter = ChatRoomAdapter { chatRoom ->
-            val bundle = Bundle().apply {
-                // chatRoom.participants[1]이 상대방 유저 아이디라고 가정
-                putString("name", chatRoom.participants[1])
-            }
-
-            findNavController().navigate(
-                R.id.action_chatMainFragment_to_chatDetailFragment,
-                bundle
-            )
+            val chatRoomId = chatRoom.id
+            val participantUid = chatRoom.participants.keys.firstOrNull() ?: "Unknown"
+            val action = ChatMainFragmentDirections.actionChatMainFragmentToChatDetailFragment(chatRoomId, participantUid)
+            findNavController().navigate(action)
         }
 
         binding?.recyclerView?.apply {
@@ -85,28 +99,9 @@ class ChatListFragment : Fragment() {
         }
     }
 
-    /**
-     * 채팅방 목록 데이터 로드
-     * 일반/오픈채팅 구분하여 더미 데이터 표시
-*/
-    private fun loadChatList() {
-        val dummyData = if (isOpenChat) {
-            listOf(
-                ChatRoom("3", listOf("me", "오픈채팅1"), "오픈채팅방입니다", System.currentTimeMillis()),
-                ChatRoom("4", listOf("me", "오픈채팅2"), "누구나 참여가능!", System.currentTimeMillis())
-            )
-        } else {
-            listOf(
-                ChatRoom("1", listOf("me", "사용자1"), "안녕하세요!", System.currentTimeMillis()),
-                ChatRoom("2", listOf("me", "사용자2"), "반갑습니다!", System.currentTimeMillis())
-            )
-        }
-        chatAdapter.submitList(dummyData)
-    }
-
-
     override fun onDestroyView() {
         super.onDestroyView()
+        binding?.recyclerView?.adapter = null // RecyclerView Adapter 정리
         binding = null
     }
 }

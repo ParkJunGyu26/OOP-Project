@@ -1,7 +1,7 @@
 package com.example.kau_oop_project.repository
 
-import com.example.kau_oop_project.data.model.chat.ChatMessage
-import com.example.kau_oop_project.data.model.chat.ChatRoom
+import com.example.kau_oop_project.data.model.ChatMessage
+import com.example.kau_oop_project.data.model.ChatRoom
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
@@ -27,23 +27,25 @@ class ChatRepository {
      * @return 채팅방 목록을 Flow로 반환
      */
     fun getChatRooms(userId: String): Flow<List<ChatRoom>> = callbackFlow {
+        val query = roomsRef.orderByChild("participants/$userId").equalTo(true)
+
         val listener = object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val rooms = snapshot.children.mapNotNull { roomSnapshot ->
-                    roomSnapshot.getValue(ChatRoom::class.java)?.let { room ->
-                        room.copy(id = roomSnapshot.key ?: "")
-                    }
-                }.filter { it.participants.contains(userId) }
+                    roomSnapshot.getValue(ChatRoom::class.java)?.copy(id = roomSnapshot.key ?: "")
+                }
+                Log.d("ChatRepository", "Fetched Rooms: $rooms")
                 trySend(rooms).isSuccess
             }
 
             override fun onCancelled(error: DatabaseError) {
+                Log.e("ChatRepository", "Error fetching rooms: ${error.message}")
                 close(error.toException())
             }
         }
 
-        roomsRef.addValueEventListener(listener)
-        awaitClose { roomsRef.removeEventListener(listener) }
+        query.addValueEventListener(listener)
+        awaitClose { query.removeEventListener(listener) }
     }
 
 

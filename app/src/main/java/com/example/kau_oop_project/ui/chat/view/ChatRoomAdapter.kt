@@ -5,8 +5,13 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.kau_oop_project.data.model.chat.ChatRoom
+import com.example.kau_oop_project.R
+import com.example.kau_oop_project.data.model.ChatRoom
 import com.example.kau_oop_project.databinding.ItemChatBinding
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -56,12 +61,26 @@ class ChatRoomAdapter(
          * @param chatRoom 표시할 채팅방 정보
          */
         fun bind(chatRoom: ChatRoom) {
-            binding.apply {
-                // participants[1]가 반드시 존재한다는 가정 하에 사용
-                tvName.text = chatRoom.participants.getOrNull(1) ?: "Unknown"
-                tvMessage.text = chatRoom.lastMessage
-                tvTime.text = formatTime(chatRoom.lastMessageTime)
-            }
+            binding.root.setOnClickListener { onItemClick(chatRoom) }
+            binding.ivProfile.setImageResource(R.drawable.user)
+
+            val participantUid = chatRoom.participants.keys.firstOrNull() ?: "Unknown"
+
+            // DB에서 uid에 해당하는 user 정보 가져오기
+            val userRef = FirebaseDatabase.getInstance().getReference("users").child(participantUid)
+            userRef.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val userName = snapshot.child("name").getValue(String::class.java) ?: "Unknown"
+                    binding.tvName.text = userName
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    // 에러 처리 로직
+                }
+            })
+
+            binding.tvMessage.text = chatRoom.lastMessage
+            binding.tvTime.text = formatTime(chatRoom.lastMessageTime)
         }
 
         /**

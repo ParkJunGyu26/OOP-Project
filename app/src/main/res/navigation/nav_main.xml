@@ -14,6 +14,7 @@
             android:id="@+id/action_chatMainFragment_to_chatDetailFragment"
             app:destination="@id/chatDetailFragment" />
     </fragment>
+
     <fragment
         android:id="@+id/loginFragment"
         android:name="com.example.kau_oop_project.ui.user.view.LoginFragment"
@@ -26,9 +27,13 @@
                 app:argType="string" />
         </action>
         <action
+            android:id="@+id/action_loginFragment_to_chatMainFragment"
+            app:destination="@id/chatMainFragment" />
+        <action
             android:id="@+id/action_loginFragment_to_registerFragment"
             app:destination="@id/registerFragment" />
     </fragment>
+
     <fragment
         android:id="@+id/registerFragment"
         android:name="com.example.kau_oop_project.ui.user.view.RegisterFragment"
@@ -41,6 +46,7 @@
             android:id="@+id/action_registerFragment_to_loginFragment"
             app:destination="@id/loginFragment" />
     </fragment>
+
     <fragment
         android:id="@+id/mypageFragment"
         android:name="com.example.kau_oop_project.ui.user.view.MypageFragment"
@@ -53,6 +59,7 @@
             android:id="@+id/action_mypageFragment_to_myLogFragment"
             app:destination="@id/myPostLogFragment" />
     </fragment>
+
     <fragment
         android:id="@+id/updateMypageFragment"
         android:name="com.example.kau_oop_project.ui.user.view.updateMypageFragment"
@@ -62,6 +69,7 @@
             android:id="@+id/action_updateMypageFragment_to_mypageFragment"
             app:destination="@id/mypageFragment" />
     </fragment>
+
     <fragment
         android:id="@+id/myPostLogFragment"
         android:name="com.example.kau_oop_project.ui.user.view.myPostLogFragment"
@@ -74,6 +82,7 @@
             android:id="@+id/action_myPostLogFragment_to_myCommentLogFragment"
             app:destination="@id/myCommentLogFragment" />
     </fragment>
+
     <fragment
         android:id="@+id/myCommentLogFragment"
         android:name="com.example.kau_oop_project.ui.user.view.myCommentLogFragment"
@@ -86,6 +95,7 @@
             android:id="@+id/action_myCommentLogFragment_to_myScrapLogFragment"
             app:destination="@id/myScrapLogFragment" />
     </fragment>
+
     <fragment
         android:id="@+id/myScrapLogFragment"
         android:name="com.example.kau_oop_project.ui.user.view.myScrapLogFragment"
@@ -98,6 +108,7 @@
             android:id="@+id/action_myScrapLogFragment_to_myCommentLogFragment"
             app:destination="@id/myCommentLogFragment" />
     </fragment>
+
     <fragment
         android:id="@+id/chatListFragment"
         android:name="com.example.kau_oop_project.ui.chat.view.ChatListFragment"
@@ -113,7 +124,14 @@
         android:name="com.example.kau_oop_project.ui.chat.view.ChatDetailFragment"
         android:label="fragment_chat_detail"
         tools:layout="@layout/fragment_chat_detail">
+        <argument
+            android:name="chatRoomId"
+            app:argType="string" />
+        <argument
+            android:name="participantUid"
+            app:argType="string" />
     </fragment>
+
     <fragment
         android:id="@+id/postDetailFragment"
         android:name="com.example.kau_oop_project.ui.post.view.PostDetailFragment"
@@ -123,6 +141,7 @@
             android:id="@+id/action_postDetail_to_postList"
             app:destination="@id/postListFragment" />
     </fragment>
+
     <fragment
         android:id="@+id/postListFragment"
         android:name="com.example.kau_oop_project.ui.post.view.PostListFragment"
@@ -135,6 +154,7 @@
             android:id="@+id/action_postList_to_postWrite"
             app:destination="@id/postWriteFragment" />
     </fragment>
+
     <fragment
         android:id="@+id/postWriteFragment"
         android:name="com.example.kau_oop_project.ui.post.view.PostWriteFragment"

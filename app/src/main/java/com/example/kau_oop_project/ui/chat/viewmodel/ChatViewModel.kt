@@ -4,8 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.kau_oop_project.data.model.chat.ChatMessage
-import com.example.kau_oop_project.data.model.chat.ChatRoom
+import com.example.kau_oop_project.data.model.ChatMessage
+import com.example.kau_oop_project.data.model.ChatRoom
 import com.example.kau_oop_project.repository.ChatRepository
 import kotlinx.coroutines.launch
 

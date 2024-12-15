@@ -1,10 +1,11 @@
 package com.example.kau_oop_project.ui.chat.view
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.kau_oop_project.R
-import com.example.kau_oop_project.data.model.chat.ChatRoom
+import com.example.kau_oop_project.data.model.ChatRoom
 import com.example.kau_oop_project.databinding.ItemChatBinding
 
 /**
@@ -21,7 +22,11 @@ class ChatAdapter(
         fun bind(chatRoom: ChatRoom) {
             binding.root.setOnClickListener { onItemClick(chatRoom) }
             binding.ivProfile.setImageResource(R.drawable.user)
-            binding.tvName.text = chatRoom.participants.getOrNull(1) ?: "Unknown"
+
+            // participants Map의 첫 번째 키 가져오기 (예: 사용자 ID)
+            val participantName = chatRoom.participants.keys.firstOrNull() ?: "Unknown"
+            binding.tvName.text = participantName
+
             binding.tvMessage.text = chatRoom.lastMessage
             binding.tvTime.text = formatTime(chatRoom.lastMessageTime)
         }
@@ -44,6 +49,7 @@ class ChatAdapter(
     override fun getItemCount() = chatRooms.size
 
     fun updateChatRooms(newChatRooms: List<ChatRoom>) {
+        Log.d("ChatAdapter", "Updated chatRooms: $newChatRooms")
         chatRooms.clear()
         chatRooms.addAll(newChatRooms)
         notifyDataSetChanged()
