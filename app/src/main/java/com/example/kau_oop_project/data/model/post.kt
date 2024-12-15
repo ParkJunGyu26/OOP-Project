@@ -36,3 +36,4 @@ data class Post(
     val postReplyIdList: List<String> = emptyList(),
     val postTimeStamp: Long=0
 )
+
