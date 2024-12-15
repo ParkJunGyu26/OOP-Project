@@ -42,9 +42,6 @@ class ChatRoomAdapter(
         private val binding: ItemChatBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        /**
-         * ViewHolder 초기화 및 클릭 이벤트 설정
-         */
         init {
             itemView.setOnClickListener {
                 val position = bindingAdapterPosition
@@ -60,7 +57,8 @@ class ChatRoomAdapter(
          */
         fun bind(chatRoom: ChatRoom) {
             binding.apply {
-                tvName.text = chatRoom.participants[1]
+                // participants[1]가 반드시 존재한다는 가정 하에 사용
+                tvName.text = chatRoom.participants.getOrNull(1) ?: "Unknown"
                 tvMessage.text = chatRoom.lastMessage
                 tvTime.text = formatTime(chatRoom.lastMessageTime)
             }
@@ -72,6 +70,8 @@ class ChatRoomAdapter(
          * @return 형식화된 시간 문자열
          */
         private fun formatTime(timestamp: Long): String {
+            // timestamp가 0일 경우 예외 처리
+            if (timestamp == 0L) return ""
             val sdf = SimpleDateFormat("HH:mm", Locale.getDefault())
             return sdf.format(Date(timestamp))
         }
@@ -87,6 +87,10 @@ private class ChatRoomDiffCallback : DiffUtil.ItemCallback<ChatRoom>() {
     }
 
     override fun areContentsTheSame(oldItem: ChatRoom, newItem: ChatRoom): Boolean {
-        return oldItem == newItem
+        // lastMessage나 lastMessageTime이 변경되면 false 반환
+        return oldItem.id == newItem.id &&
+                // oldItem.participants == newItem.participants &&
+                oldItem.lastMessage == newItem.lastMessage &&
+                oldItem.lastMessageTime == newItem.lastMessageTime
     }
-} 
+}

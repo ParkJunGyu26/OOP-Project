@@ -3,6 +3,7 @@ package com.example.kau_oop_project.data.model.chat
 data class ChatRoom(
     val id: String = "",
     var participants: List<String> = listOf(),
+    // var participants: Map<String, Boolean> = emptyMap(),
     var lastMessage: String = "",
     var lastMessageTime: Long = 0
 )

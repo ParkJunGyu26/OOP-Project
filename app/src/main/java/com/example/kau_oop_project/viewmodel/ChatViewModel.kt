@@ -65,6 +65,11 @@ class ChatViewModel : ViewModel() {
      * 메시지 전송
      */
     fun sendMessage(message: ChatMessage?) {
+        if (message == null) {
+            _operationResult.value = false
+            return
+        }
+
         viewModelScope.launch {
             val result = repository.sendMessage(message)
             _operationResult.value = result
@@ -75,6 +80,11 @@ class ChatViewModel : ViewModel() {
      * 채팅방 생성
      */
     fun createChatRoom(chatRoom: ChatRoom?) {
+        if (chatRoom == null) {
+            _operationResult.value = false
+            return
+        }
+
         viewModelScope.launch {
             val result = repository.createChatRoom(chatRoom)
             _operationResult.value = result != null

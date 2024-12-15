@@ -54,11 +54,19 @@ dependencies {
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
 
+    // AndroidX Fragment KTX
+    implementation("androidx.fragment:fragment-ktx:1.6.1")
+
     // Firebase with BoM
     implementation(platform("com.google.firebase:firebase-bom:33.4.0"))
     implementation("com.google.firebase:firebase-database-ktx")
     implementation("com.google.firebase:firebase-auth-ktx")
     implementation("com.google.firebase:firebase-firestore-ktx")
+
+    // Kotlin Coroutines
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.3")
 
     // Testing Libraries
     testImplementation(libs.junit)

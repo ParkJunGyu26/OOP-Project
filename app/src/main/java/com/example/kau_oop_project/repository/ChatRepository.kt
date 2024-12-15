@@ -7,73 +7,70 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.withContext
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
+import android.util.Log
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
+import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.channels.awaitClose
 
-/**
- * 채팅 관련 데이터를 Firebase Realtime Database와 연동하여 처리하는 Repository
- */
 class ChatRepository {
-    // Firebase 데이터베이스 참조
-    val database = Firebase.database
-    val roomsRef = database.getReference("chats/rooms")
-    val messagesRef = database.getReference("chats/messages")
+    private val database = Firebase.database
+    private val roomsRef = database.getReference("chats/rooms")
+    private val messagesRef = database.getReference("chats/messages")
 
     /**
-     * 사용자의 채팅방 목록을 조회
+     * 사용자의 채팅방 목록을 실시간으로 조회
      * @param userId 조회할 사용자 ID
      * @return 채팅방 목록을 Flow로 반환
      */
-    suspend fun getChatRooms(userId: String?): Flow<List<ChatRoom>> = flow {
-        withContext(Dispatchers.IO) {
-            try {
-                if (userId != null) {
-                    val snapshot = suspendCoroutine<DataSnapshot> { continuation ->
-                        roomsRef.orderByChild("participants/$userId").equalTo(true)
-                            .get()
-                            .addOnSuccessListener { continuation.resume(it) }
-                            .addOnFailureListener { throw it }
+    fun getChatRooms(userId: String): Flow<List<ChatRoom>> = callbackFlow {
+        val listener = object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val rooms = snapshot.children.mapNotNull { roomSnapshot ->
+                    roomSnapshot.getValue(ChatRoom::class.java)?.let { room ->
+                        room.copy(id = roomSnapshot.key ?: "")
                     }
-                    val rooms = snapshot.children.mapNotNull { it.getValue(ChatRoom::class.java) }
-                    emit(rooms)
-                } else {
-                    emit(emptyList())
-                }
-            } catch (e: Exception) {
-                emit(emptyList())
-                // 로그 처리나 에러 핸들링 추가 가능
+                }.filter { it.participants.contains(userId) }
+                trySend(rooms).isSuccess
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                close(error.toException())
             }
         }
+
+        roomsRef.addValueEventListener(listener)
+        awaitClose { roomsRef.removeEventListener(listener) }
     }
 
+
     /**
-     * 특정 채팅방의 메시지 목록을 조회
+     * 특정 채팅방의 메시지 목록을 실시간으로 조회
      * @param chatRoomId 채팅방 ID
      * @return 메시지 목록을 Flow로 반환
      */
-    suspend fun getMessages(chatRoomId: String?): Flow<List<ChatMessage>> = flow {
-        withContext(Dispatchers.IO) {
-            try {
-                if (chatRoomId != null) {
-                    val snapshot = suspendCoroutine<DataSnapshot> { continuation ->
-                        messagesRef.orderByChild("chatRoomId").equalTo(chatRoomId)
-                            .get()
-                            .addOnSuccessListener { continuation.resume(it) }
-                            .addOnFailureListener { throw it }
-                    }
-                    val messages = snapshot.children.mapNotNull { it.getValue(ChatMessage::class.java) }
-                    emit(messages)
-                } else {
-                    emit(emptyList())
+    fun getMessages(chatRoomId: String): Flow<List<ChatMessage>> = callbackFlow {
+        val query = messagesRef.orderByChild("chatRoomId").equalTo(chatRoomId)
+
+        val listener = object : com.google.firebase.database.ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val messages = snapshot.children.mapNotNull {
+                    it.getValue(ChatMessage::class.java)
                 }
-            } catch (e: Exception) {
-                emit(emptyList())
-                // 로그 처리나 에러 핸들링 추가 가능
+                trySend(messages).isSuccess
+            }
+
+            override fun onCancelled(error: com.google.firebase.database.DatabaseError) {
+                Log.e("ChatRepository", "Error fetching messages: ${error.message}")
             }
         }
+
+        query.addValueEventListener(listener)
+
+        awaitClose { query.removeEventListener(listener) }
     }
 
     /**
@@ -81,17 +78,22 @@ class ChatRepository {
      * @param message 전송할 메시지 객체
      * @return 전송 성공 여부
      */
-    suspend fun sendMessage(message: ChatMessage?): Boolean {
+    suspend fun sendMessage(message: ChatMessage): Boolean {
         return withContext(Dispatchers.IO) {
             try {
-                if (message != null) {
-                    val messageRef = messagesRef.push()
-                    messageRef.setValue(message).await()
-                    true
-                } else {
-                    false
-                }
+                val messageRef = messagesRef.push()
+                messageRef.setValue(message).await()
+
+                // 메시지를 전송한 뒤 채팅방의 마지막 메시지 업데이트
+                roomsRef.child(message.chatRoomId).updateChildren(
+                    mapOf(
+                        "lastMessage" to message.message,
+                        "lastMessageTime" to message.timestamp
+                    )
+                ).await()
+                true
             } catch (e: Exception) {
+                Log.e("ChatRepository", "Error sending message", e)
                 false
             }
         }
@@ -100,20 +102,39 @@ class ChatRepository {
     /**
      * 새로운 채팅방 생성
      * @param chatRoom 생성할 채팅방 정보
-     * @return 생성된 채팅방의 ID, 실패시 null
+     * @return 생성된 채팅방의 ID, 실패 시 null
      */
-    suspend fun createChatRoom(chatRoom: ChatRoom?): String? {
+    suspend fun createChatRoom(chatRoom: ChatRoom): String? {
         return withContext(Dispatchers.IO) {
             try {
-                if (chatRoom != null) {
-                    val roomRef = roomsRef.push()
-                    roomRef.setValue(chatRoom).await()
-                    roomRef.key
-                } else {
-                    null
-                }
+                val roomRef = roomsRef.push()
+                roomRef.setValue(chatRoom).await()
+                roomRef.key
             } catch (e: Exception) {
+                Log.e("ChatRepository", "Error creating chat room", e)
                 null
+            }
+        }
+    }
+
+    /**
+     * 특정 채팅방에 새로운 참가자를 추가
+     * @param chatRoomId 채팅방 ID
+     * @param userId 추가할 사용자 ID
+     * @return 추가 성공 여부
+     */
+    suspend fun addParticipant(chatRoomId: String, userId: String): Boolean {
+        return withContext(Dispatchers.IO) {
+            try {
+                val participantsRef = roomsRef.child(chatRoomId).child("participants")
+                val currentParticipants = participantsRef.get().await().children.mapNotNull { it.value as? String }
+                if (!currentParticipants.contains(userId)) {
+                    participantsRef.setValue(currentParticipants + userId).await()
+                }
+                true
+            } catch (e: Exception) {
+                Log.e("ChatRepository", "Error adding participant", e)
+                false
             }
         }
     }
