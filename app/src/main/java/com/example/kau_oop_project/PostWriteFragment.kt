@@ -1,18 +1,15 @@
 package com.example.kau_oop_project
 
-import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
-import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.kau_oop_project.data.model.*
+import com.example.kau_oop_project.data.model.user.User
 import com.example.kau_oop_project.databinding.FragmentPostWriteBinding
 import com.example.kau_oop_project.viewmodel.PostViewModel
 
@@ -85,7 +82,7 @@ class PostWriteFragment : Fragment() {
                 postTitle = title, // 입력된 제목
                 postRecommendCount = 0, // 추천 수는 초기값으로 0 설정
                 postViewCount=0, // 초기 조회수는 0
-                postAuthor = user( // 나중에 user 파트가 완성되면 nowUser이 될 것
+                postAuthor = User( // 나중에 user 파트가 완성되면 nowUser이 될 것
                     uid = "adminUid", // 작성자 고유 ID
                     userEmail = "admin@naver.com", // 작성자 이메일
                     school = "KAU", // 작성자 학교
