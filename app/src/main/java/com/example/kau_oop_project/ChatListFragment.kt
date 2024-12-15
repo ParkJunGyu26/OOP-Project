@@ -9,11 +9,15 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.kau_oop_project.databinding.FragmentChatListBinding
 import com.example.kau_oop_project.data.model.chat.ChatRoom
+import com.google.firebase.auth.FirebaseAuth
+import androidx.fragment.app.viewModels
+import com.example.kau_oop_project.viewmodel.ChatViewModel
 
 class ChatListFragment : Fragment() {
     private var binding: FragmentChatListBinding? = null
     private lateinit var chatAdapter: ChatRoomAdapter
     private var isOpenChat: Boolean = false
+    private val chatViewModel: ChatViewModel by viewModels()
 
     /**
      * 채팅 목록 Fragment 인스턴스 생성
@@ -49,6 +53,13 @@ class ChatListFragment : Fragment() {
         isOpenChat = arguments?.getBoolean("isOpenChat") ?: false
         setupRecyclerView()
         loadChatList()
+//        val currentUserId = FirebaseAuth.getInstance().currentUser?.uid
+//        chatViewModel.loadChatRooms(currentUserId)   // Firebase에서 채팅방 불러오기
+//
+//        chatViewModel.chatRooms.observe(viewLifecycleOwner) { rooms ->
+//            // 불러온 채팅방 목록을 어댑터에 반영
+//            chatAdapter.submitList(rooms)
+//        }
     }
 
     /**
@@ -57,9 +68,10 @@ class ChatListFragment : Fragment() {
     private fun setupRecyclerView() {
         chatAdapter = ChatRoomAdapter { chatRoom ->
             val bundle = Bundle().apply {
+                // chatRoom.participants[1]이 상대방 유저 아이디라고 가정
                 putString("name", chatRoom.participants[1])
             }
-            // 채팅 상세화면으로 네비게이션
+
             findNavController().navigate(
                 R.id.action_chatMainFragment_to_chatDetailFragment,
                 bundle
@@ -76,7 +88,7 @@ class ChatListFragment : Fragment() {
     /**
      * 채팅방 목록 데이터 로드
      * 일반/오픈채팅 구분하여 더미 데이터 표시
-     */
+*/
     private fun loadChatList() {
         val dummyData = if (isOpenChat) {
             listOf(
@@ -92,8 +104,9 @@ class ChatListFragment : Fragment() {
         chatAdapter.submitList(dummyData)
     }
 
+
     override fun onDestroyView() {
         super.onDestroyView()
         binding = null
     }
-} 
+}

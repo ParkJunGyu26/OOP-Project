@@ -3,28 +3,55 @@ package com.example.kau_oop_project.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.kau_oop_project.data.model.chat.ChatMessage
 import com.example.kau_oop_project.repository.ChatDetailRepository
+import kotlinx.coroutines.launch
+import com.example.kau_oop_project.viewmodel.ChatDetailViewModel
 
 class ChatDetailViewModel : ViewModel() {
     private val repository = ChatDetailRepository()
 
-    // 메시지 상태
-    private val _messageStatus = MutableLiveData<Boolean>(false)
+    // 메시지 리스트 상태
+    private val _messages = MutableLiveData<List<ChatMessage>>()
+    val messages: LiveData<List<ChatMessage>> get() = _messages
+
+    // 메시지 전송 상태
+    private val _messageStatus = MutableLiveData<Boolean>()
     val messageStatus: LiveData<Boolean> get() = _messageStatus
 
-    // 메시지 유효성 검사
-    fun messageValid(message: String) {
-        updateMessageStatus(message.isEmpty())
+    /**
+     * 특정 채팅방의 메시지를 로드
+     */
+    fun loadMessages(chatRoomId: String) {
+        viewModelScope.launch {
+            repository.getMessages(chatRoomId).collect { messageList ->
+                println("ViewModel Messages Loaded: $messageList") // 로그 추가
+                _messages.value = messageList
+            }
+        }
     }
 
-    // 메시지 전송 함수 추가
-    fun sendMessage(message: String) {
-        // 메시지 전송 로직
-        // 추후 repository를 통해 실제 전송 구현
-        updateMessageStatus(true)
-    }
+    /**
+     * 메시지 전송
+     */
+    fun sendMessage(chatRoomId: String, senderId: String, message: String) {
+        if (message.isBlank()) {
+            _messageStatus.value = false
+            return
+        }
 
-    private fun updateMessageStatus(status: Boolean) {
-        _messageStatus.value = status
+        val chatMessage = ChatMessage(
+            id = "",
+            chatRoomId = chatRoomId,
+            senderId = senderId,
+            message = message,
+            timestamp = System.currentTimeMillis()
+        )
+
+        viewModelScope.launch {
+            val result = repository.sendMessage(chatMessage)
+            _messageStatus.value = result.isSuccess
+        }
     }
 }
