@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_main"
-    app:startDestination="@id/chatMainFragment">
+    app:startDestination="@+id/loginFragment">
 
     <fragment
         android:id="@+id/chatMainFragment"
@@ -43,9 +43,9 @@
     </fragment>
     <fragment
         android:id="@+id/mypageFragment"
-        android:name="com.example.kau_oop_project.mypageFragment"
+        android:name="com.example.kau_oop_project.ui.user.view.MypageFragment"
         android:label="fragment_mypage"
-        tools:layout="@layout/fragment_mypage" >
+        tools:layout="@layout/fragment_mypage">
         <action
             android:id="@+id/action_mypageFragment_to_updateMypageFragment"
             app:destination="@id/updateMypageFragment" />
