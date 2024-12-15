@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.kau_oop_project.data.model.response.LoginResponse
 import com.example.kau_oop_project.repository.LoginRepository
 import kotlinx.coroutines.launch
 import java.util.regex.Pattern
@@ -19,16 +20,17 @@ class LoginViewModel : ViewModel() {
     private val emailPattern: Pattern = Patterns.EMAIL_ADDRESS
 
     // 로그인 결과
-    private val _loginResult = MutableLiveData<Boolean>()
-    val loginResult: LiveData<Boolean> get() = _loginResult
+    private val _loginResult = MutableLiveData<LoginResponse>()
+    val loginResult: LiveData<LoginResponse> = _loginResult
 
     // 이메일 형식 체크
     private val _emailCheck = MutableLiveData<EmailValidation>()
-    val emailCheck: LiveData<EmailValidation> get() = _emailCheck
+    val emailCheck: LiveData<EmailValidation> = _emailCheck
 
     fun verifyUser(email: String, password: String) {
         viewModelScope.launch {
-            _loginResult.value = repository.verifyLogin(email, password)
+            val result = repository.verifyLogin(email, password)
+            _loginResult.value = result
         }
     }
 
