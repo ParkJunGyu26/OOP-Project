@@ -1,6 +1,7 @@
 package com.example.kau_oop_project.ui.post.view
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -35,7 +36,7 @@ class PostWriteFragment : Fragment() {
 
         // 게시글 제출 버튼 클릭 리스너
         binding?.buttonSubmit?.setOnClickListener {
-            uploadPostAndNavigate()
+            uploadPost()
         }
     }
 
@@ -44,20 +45,20 @@ class PostWriteFragment : Fragment() {
         Toast.makeText(requireContext(), "이미지가 추가되었습니다.", Toast.LENGTH_SHORT).show()
     }
 
-    private fun uploadPostAndNavigate() {
+    private fun uploadPost() {
         binding?.apply {
             val title = inputTitle.text.toString()
             val tag = inputTag.text.toString()
             val content = inputContent.text.toString()
-            var isToasted = false
-
+            Log.d("PostWriteFragment", "current user id : ${userViewModel.currentUser.value?.uid}")
             // currentUser UID 가져오기
             userViewModel.currentUser.value?.let { user ->
                 // ViewModel에 업로드 요청
                 postViewModel.uploadPost(title, tag, content, user.uid)
 
                 // 업로드 결과 관찰
-                postViewModel.postUploadResult.observe(viewLifecycleOwner) { result ->
+                var isToasted = false
+                postViewModel.UploadResult.observe(viewLifecycleOwner) { result ->
                     if (!isToasted) {
                         isToasted=true
                         when {

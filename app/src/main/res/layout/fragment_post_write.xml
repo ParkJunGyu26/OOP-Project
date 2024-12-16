@@ -18,6 +18,7 @@
         android:layout_marginStart="5dp"
         android:layout_marginTop="5dp"
         android:layout_marginEnd="5dp"
+        android:background="@drawable/border_rect_black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -28,13 +29,16 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
             android:layout_marginTop="10dp"
+            android:layout_marginEnd="5dp"
             android:layout_marginBottom="5dp"
             android:background="#A9A9A9"
-            android:singleLine="true"
-            android:maxLines="1"
             android:hint="제목을 입력하세요"
             android:imeOptions="actionDone"
+            android:maxLength="15"
+            android:maxLines="1"
+            android:singleLine="true"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/input_tag"
             app:layout_constraintVertical_bias="1.0" />
@@ -45,13 +49,16 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
             android:layout_marginTop="5dp"
+            android:layout_marginEnd="5dp"
             android:layout_marginBottom="5dp"
             android:background="#A9A9A9"
-            android:singleLine="true"
-            android:maxLines="1"
             android:hint="태그를 설정해보세요!"
             android:imeOptions="actionDone"
+            android:maxLength="5"
+            android:maxLines="1"
+            android:singleLine="true"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.0" />
@@ -64,6 +71,7 @@
         android:layout_marginTop="5dp"
         app:layout_constraintBottom_toTopOf="@+id/button_submit"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout2"
+        android:background="@drawable/border_rect_black"
         tools:layout_editor_absoluteX="12dp">
 
         <EditText
@@ -84,6 +92,7 @@
         android:layout_marginTop="5dp"
         android:orientation="horizontal"
         app:layout_constraintTop_toBottomOf="@+id/constraintLayout4"
+        android:background="@drawable/border_rect_black"
         tools:layout_editor_absoluteX="16dp">
 
         <ImageButton
@@ -115,19 +124,6 @@
             android:src="@android:drawable/btn_star" />
 
     </LinearLayout>
-
-    <!-- 주제 설정 스피너 -->
-
-    <!-- 제목 입력 -->
-
-    <!-- 도구 모음 -->
-
-
-    <!-- 본문 입력 -->
-
-    <!-- 작성 완료 버튼 -->
-
-
     <Button
         android:id="@+id/button_submit"
         android:layout_width="match_parent"

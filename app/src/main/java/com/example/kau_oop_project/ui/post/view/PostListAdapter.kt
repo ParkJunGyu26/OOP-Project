@@ -18,10 +18,13 @@ class PostListAdapter(private val postViewModel: PostViewModel) : RecyclerView.A
             binding.postTitle.text = post.postTitle
             binding.postTag.text = "[ ${post.postTag} ]"
             binding.postImageType.setImageResource(R.drawable.ic_image)
+            binding.postViewTime.text="조회 ${post.postViewCount.toString()}"
+            binding.postRecommendTime.text="추천 ${post.postRecommendCount.toString()}"
 
             itemView.setOnClickListener {
                 // 게시물 선택 시 ViewModel에 저장
-                postViewModel.selectPost(post)
+                postViewModel.incrementViewCount(post.postId)
+                postViewModel.retrievePostById(post.postId)
                 // PostDetailFragment로 이동
                 itemView.findNavController().navigate(R.id.postDetailFragment)
             }
