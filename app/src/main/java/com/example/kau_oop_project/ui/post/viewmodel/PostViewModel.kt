@@ -225,10 +225,12 @@ class PostViewModel : ViewModel() {
     }
 
     // 추천수 증가
-    fun incrementRecommendCount(postId: String) {
-        viewModelScope.launch {
-            postRepository.incrementRecommendCount(postId)
-            retrievePostById(postId)
+    fun incrementRecommendCount() {
+        nowPost.value?.postId?.let{
+            viewModelScope.launch {
+                postRepository.incrementRecommendCount(it)
+                retrievePostById(it)
+            }
         }
     }
 }

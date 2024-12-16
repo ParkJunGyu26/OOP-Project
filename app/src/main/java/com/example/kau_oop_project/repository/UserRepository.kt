@@ -4,7 +4,9 @@ import com.example.kau_oop_project.data.model.User
 import com.google.firebase.Firebase
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.database
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 
 open class UserRepository {
     private val database = Firebase.database
@@ -32,6 +34,34 @@ open class UserRepository {
             )
         } catch (e: Exception) {
             null
+        }
+    }
+
+    suspend fun getUsersByUids(uids: List<String>): List<User> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val userList = mutableListOf<User>()
+
+                for (uid in uids) {
+                    val snapshot = userRef.child(uid).get().await()
+                    snapshot.child("name").getValue(String::class.java)?.let { name ->
+                        val profileImageUrl = snapshot.child("profileImageUrl")
+                            .getValue(String::class.java)
+                            ?: User().profileImageUrl
+
+                        userList.add(
+                            User(
+                                uid = uid,
+                                name = name,
+                                profileImageUrl = profileImageUrl
+                            )
+                        )
+                    }
+                }
+                userList
+            } catch (e: Exception) {
+                emptyList()
+            }
         }
     }
 }

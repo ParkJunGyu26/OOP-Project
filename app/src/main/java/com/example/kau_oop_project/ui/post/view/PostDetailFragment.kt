@@ -112,6 +112,10 @@ class PostDetailFragment : Fragment() {
                 .setNegativeButton("취소", null)
                 .show()
         }
+
+        binding?.btnRecommend?.setOnClickListener {
+            postViewModel.incrementRecommendCount()
+        }
     }
 
     private fun loadPost(postId: String) {
