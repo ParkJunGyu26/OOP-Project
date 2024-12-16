@@ -20,44 +20,39 @@ class ChatRepository {
     private val database = Firebase.database
     private val roomsRef = database.getReference("chats/rooms")
     private val messagesRef = database.getReference("chats/messages")
+    private val usersRef = database.getReference("users")
 
-    /**
-     * 사용자의 채팅방 목록을 실시간으로 조회
-     * @param userId 조회할 사용자 ID
-     * @return 채팅방 목록을 Flow로 반환
-     */
-    fun getChatRooms(userId: String): Flow<List<ChatRoom>> = callbackFlow {
-        val query = roomsRef.orderByChild("participants/$userId").equalTo(true)
+    suspend fun sendMessage(message: ChatMessage): Result<Boolean> {
+        return withContext(Dispatchers.IO) {
+            try {
+                // 기존 메시지 ID를 사용하여 메시지 저장
+                val messageId = message.id.ifEmpty { messagesRef.push().key ?: throw Exception("Failed to generate message ID") }
 
-        val listener = object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val rooms = snapshot.children.mapNotNull { roomSnapshot ->
-                    roomSnapshot.getValue(ChatRoom::class.java)?.copy(id = roomSnapshot.key ?: "")
-                }
-                Log.d("ChatRepository", "Fetched Rooms: $rooms")
-                trySend(rooms).isSuccess
-            }
+                // 트랜잭션으로 처리하여 동시성 문제 방지
+                val updates = hashMapOf<String, Any>(
+                    "chats/messages/$messageId" to message,
+                    "chats/rooms/${message.chatRoomId}/lastMessage" to message.message,
+                    "chats/rooms/${message.chatRoomId}/lastMessageTime" to message.timestamp,
+                    "chats/rooms/${message.chatRoomId}/participantName" to message.senderId
+                )
 
-            override fun onCancelled(error: DatabaseError) {
-                Log.e("ChatRepository", "Error fetching rooms: ${error.message}")
-                close(error.toException())
+                // 기존 채팅방의 정보를 업데이트
+                database.reference.updateChildren(updates).await()
+                Result.success(true)
+            } catch (e: Exception) {
+                Log.e("ChatRepository", "Error sending message: ${e.message}")
+                Result.failure(e)
             }
         }
-
-        query.addValueEventListener(listener)
-        awaitClose { query.removeEventListener(listener) }
     }
 
 
-    /**
-     * 특정 채팅방의 메시지 목록을 실시간으로 조회
-     * @param chatRoomId 채팅방 ID
-     * @return 메시지 목록을 Flow로 반환
-     */
+
+
     fun getMessages(chatRoomId: String): Flow<List<ChatMessage>> = callbackFlow {
         val query = messagesRef.orderByChild("chatRoomId").equalTo(chatRoomId)
 
-        val listener = object : com.google.firebase.database.ValueEventListener {
+        val listener = object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val messages = snapshot.children.mapNotNull {
                     it.getValue(ChatMessage::class.java)
@@ -65,67 +60,28 @@ class ChatRepository {
                 trySend(messages).isSuccess
             }
 
-            override fun onCancelled(error: com.google.firebase.database.DatabaseError) {
+            override fun onCancelled(error: DatabaseError) {
                 Log.e("ChatRepository", "Error fetching messages: ${error.message}")
             }
         }
 
         query.addValueEventListener(listener)
-
         awaitClose { query.removeEventListener(listener) }
     }
 
-    /**
-     * 새로운 메시지를 전송
-     * @param message 전송할 메시지 객체
-     * @return 전송 성공 여부
-     */
-    suspend fun sendMessage(message: ChatMessage): Boolean {
-        return withContext(Dispatchers.IO) {
-            try {
-                val messageRef = messagesRef.push()
-                messageRef.setValue(message).await()
-
-                // 메시지를 전송한 뒤 채팅방의 마지막 메시지 업데이트
-                roomsRef.child(message.chatRoomId).updateChildren(
-                    mapOf(
-                        "lastMessage" to message.message,
-                        "lastMessageTime" to message.timestamp
-                    )
-                ).await()
-                true
-            } catch (e: Exception) {
-                Log.e("ChatRepository", "Error sending message", e)
-                false
-            }
-        }
-    }
-
-    /**
-     * 새로운 채팅방 생성
-     * @param chatRoom 생성할 채팅방 정보
-     * @return 생성된 채팅방의 ID, 실패 시 null
-     */
-    suspend fun createChatRoom(chatRoom: ChatRoom): String? {
+    suspend fun createChatRoom(chatRoom: ChatRoom): Result<String> {
         return withContext(Dispatchers.IO) {
             try {
                 val roomRef = roomsRef.push()
                 roomRef.setValue(chatRoom).await()
-                roomRef.key
+                Result.success(roomRef.key ?: throw Exception("Failed to create chat room"))
             } catch (e: Exception) {
-                Log.e("ChatRepository", "Error creating chat room", e)
-                null
+                Result.failure(e)
             }
         }
     }
 
-    /**
-     * 특정 채팅방에 새로운 참가자를 추가
-     * @param chatRoomId 채팅방 ID
-     * @param userId 추가할 사용자 ID
-     * @return 추가 성공 여부
-     */
-    suspend fun addParticipant(chatRoomId: String, userId: String): Boolean {
+    suspend fun addParticipant(chatRoomId: String, userId: String): Result<Boolean> {
         return withContext(Dispatchers.IO) {
             try {
                 val participantsRef = roomsRef.child(chatRoomId).child("participants")
@@ -133,10 +89,51 @@ class ChatRepository {
                 if (!currentParticipants.contains(userId)) {
                     participantsRef.setValue(currentParticipants + userId).await()
                 }
-                true
+                Result.success(true)
             } catch (e: Exception) {
-                Log.e("ChatRepository", "Error adding participant", e)
-                false
+                Result.failure(e)
+            }
+        }
+    }
+
+    suspend fun getUserName(uid: String): Result<String> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val snapshot = usersRef.child(uid).child("name").get().await()
+                Result.success(snapshot.getValue(String::class.java) ?: "Unknown")
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
+        }
+    }
+
+    suspend fun getChatRooms(userId: String?): Result<List<ChatRoom>> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val snapshot = roomsRef.get().await()
+                val chatRooms = snapshot.children.mapNotNull {
+                    Log.d("ChatRepository", "ChatRoom Data: ${it.value}")
+                    it.getValue(ChatRoom::class.java)
+                }
+                Log.d("ChatRepository", "Fetched ChatRooms: $chatRooms")
+                Result.success(chatRooms)
+            } catch (e: Exception) {
+                Log.e("ChatRepository", "Error fetching chat rooms: ${e.message}")
+                Result.failure(e)
+            }
+        }
+    }
+
+    suspend fun logExistingEmails() {
+        return withContext(Dispatchers.IO) {
+            try {
+                val snapshot = usersRef.get().await()
+                for (user in snapshot.children) {
+                    val email = user.child("userEmail").getValue(String::class.java)
+                    Log.d("EmailLog", "Existing email: $email")
+                }
+            } catch (e: Exception) {
+                Log.e("EmailLog", "Error fetching emails: ${e.message}")
             }
         }
     }

@@ -4,7 +4,9 @@ data class ChatRoom(
     val id: String = "",
     val participants: Map<String, Boolean> = emptyMap(),
     var lastMessage: String = "",
-    var lastMessageTime: Long = 0L
+    var lastMessageTime: Long = 0L,
+    var participantName: String = ""
+
 )
 
 data class ChatMessage(
@@ -15,3 +17,8 @@ data class ChatMessage(
     val timestamp: Long = 0,
     val imageUrl: String? = null
 )
+
+fun isValidId(id: String): Boolean {
+    val regex = Regex("^[a-zA-Z0-9/.$#\\[\\]]+$") // 유효한 문자 패턴
+    return regex.matches(id)
+}

@@ -8,10 +8,10 @@ import kotlinx.coroutines.tasks.await
 
 open class UserRepository {
     private val database = Firebase.database
-    protected val userRef = database.getReference("users")
+    val userRef = database.getReference("users")
 
     // 이메일로 사용자 조회하는 공통 메서드
-    protected suspend fun findUserByEmail(email: String): DataSnapshot? {
+    public suspend fun findUserByEmail(email: String): DataSnapshot? {
         return userRef.orderByChild("userEmail").equalTo(email).get().await()
     }
 

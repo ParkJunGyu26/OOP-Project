@@ -1,5 +1,6 @@
 package com.example.kau_oop_project.ui.chat.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -32,14 +33,11 @@ class ChatViewModel : ViewModel() {
      */
     fun loadChatRooms(userId: String?) {
         viewModelScope.launch {
-            if (userId != null) {
-                repository.getChatRooms(userId).collect { rooms ->
-                    _chatRooms.value = rooms
-                    _operationResult.value = true
-                }
+            val result = repository.getChatRooms(userId)
+            if (result.isSuccess) {
+                _chatRooms.value = result.getOrNull() ?: emptyList()
             } else {
-                _chatRooms.value = emptyList()
-                _operationResult.value = false
+                // 에러 처리 로직 추가
             }
         }
     }
@@ -72,7 +70,7 @@ class ChatViewModel : ViewModel() {
 
         viewModelScope.launch {
             val result = repository.sendMessage(message)
-            _operationResult.value = result
+            _operationResult.value = result.getOrDefault(false) as? Boolean
         }
     }
 
@@ -87,7 +85,12 @@ class ChatViewModel : ViewModel() {
 
         viewModelScope.launch {
             val result = repository.createChatRoom(chatRoom)
-            _operationResult.value = result != null
+            if (result.isSuccess) {
+                _operationResult.value = true
+            } else {
+                Log.e("ChatViewModel", "채팅방 생성 실패: ${result.exceptionOrNull()?.message}")
+                _operationResult.value = false
+            }
         }
     }
 } 

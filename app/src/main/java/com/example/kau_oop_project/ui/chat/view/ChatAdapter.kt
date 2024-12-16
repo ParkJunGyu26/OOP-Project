@@ -31,9 +31,9 @@ class ChatAdapter(
             binding.tvTime.text = formatTime(chatRoom.lastMessageTime)
         }
 
-        private fun formatTime(timestamp: Long): String {
+        private fun formatTime(timestamp: Long?): String {
             val sdf = java.text.SimpleDateFormat("HH:mm", java.util.Locale.getDefault())
-            return sdf.format(java.util.Date(timestamp))
+            return sdf.format(java.util.Date(timestamp ?: 0))
         }
     }
 

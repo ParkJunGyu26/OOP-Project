@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.KeyEvent
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -34,28 +35,35 @@ class ChatDetailFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupUI()
+        observeViewModel()
+    }
 
+    private fun setupUI() {
         val args = ChatDetailFragmentArgs.fromBundle(requireArguments())
         val chatRoomId = args.chatRoomId
-        val participantUid = args.participantUid // Safe Args로 전달받은 participantUid
+        val participantUid = args.participantUid
+        Log.d("ChatDetailFragment", "participantUid: $participantUid")
 
-        // DB에서 participantUid를 통해 userName 로드
-        val userRef = com.google.firebase.database.FirebaseDatabase.getInstance()
-            .getReference("users")
-            .child(participantUid)
+        viewModel.loadParticipantInfo(participantUid)
 
-        userRef.addListenerForSingleValueEvent(object : com.google.firebase.database.ValueEventListener {
-            override fun onDataChange(snapshot: com.google.firebase.database.DataSnapshot) {
-                val userName = snapshot.child("name").getValue(String::class.java) ?: "Unknown"
-                binding?.tvTitle?.text = userName
-                binding?.name?.text = userName
-            }
-            override fun onCancelled(error: com.google.firebase.database.DatabaseError) {}
-        })
+        viewModel.participantName.observe(viewLifecycleOwner) { name ->
+            binding?.tvTitle?.text = name
+            binding?.name?.text = name
+        }
 
         setupRecyclerView()
-        setupUI(chatRoomId)
+        setupMessageInput(chatRoomId)
 
+        viewModel.loadMessages(chatRoomId)
+
+        binding?.btnAdd?.setOnClickListener {
+            val menu = binding?.attachmentMenu
+            menu?.visibility = if (menu?.visibility == View.GONE) View.VISIBLE else View.GONE
+        }
+    }
+
+    private fun observeViewModel() {
         viewModel.messages.observe(viewLifecycleOwner) { messages ->
             messageAdapter.setMessages(messages)
             binding?.recyclerMessages?.scrollToPosition(messages.size - 1)
@@ -67,19 +75,6 @@ class ChatDetailFragment : Fragment() {
                 if (isSuccess) "Message sent!" else "Failed to send message.",
                 Toast.LENGTH_SHORT
             ).show()
-        }
-
-        // 메시지 로딩
-        viewModel.loadMessages(chatRoomId)
-
-        binding?.btnAdd?.setOnClickListener {
-            // attachment_menu의 현재 상태 확인
-            val menu = binding?.attachmentMenu
-            if (menu?.visibility == View.GONE) {
-                menu.visibility = View.VISIBLE
-            } else {
-                menu?.visibility = View.GONE
-            }
         }
     }
 
@@ -93,19 +88,32 @@ class ChatDetailFragment : Fragment() {
         }
     }
 
-    private fun setupUI(chatRoomId: String) {
+    private fun setupMessageInput(chatRoomId: String) {
         val senderId = userViewModel.currentUser.value?.uid
         Log.d("ChatDetailFragment", "setupUI: senderId=$senderId")
 
-        binding?.btnSend?.setOnClickListener {
-            val message = binding?.editMessage?.text.toString()
-            if (message.isNotEmpty() && senderId != null) {
-                viewModel.sendMessage(chatRoomId, senderId, message)
-                binding?.editMessage?.text?.clear()
+        binding?.editMessage?.setOnKeyListener { _, keyCode, event ->
+            if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
+                sendMessage(chatRoomId, senderId)
+                true
             } else {
-                Log.e("ChatDetailFragment", "Sender ID is null or message is empty")
-                Toast.makeText(requireContext(), "Failed to send message. Please try again.", Toast.LENGTH_SHORT).show()
+                false
             }
+        }
+
+        binding?.btnSend?.setOnClickListener {
+            sendMessage(chatRoomId, senderId)
+        }
+    }
+
+    private fun sendMessage(chatRoomId: String, senderId: String?) {
+        val messageText = binding?.editMessage?.text.toString()
+        if (messageText.isNotEmpty() && senderId != null) {
+            viewModel.sendMessage(chatRoomId, senderId, messageText)
+            binding?.editMessage?.text?.clear()
+        } else {
+            Log.e("ChatDetailFragment", "Sender ID is null or message is empty")
+            Toast.makeText(requireContext(), "Failed to send message. Please try again.", Toast.LENGTH_SHORT).show()
         }
     }
 

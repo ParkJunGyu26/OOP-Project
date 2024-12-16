@@ -20,6 +20,10 @@ class ChatDetailViewModel : ViewModel() {
     private val _messageStatus = MutableLiveData<Boolean>()
     val messageStatus: LiveData<Boolean> get() = _messageStatus
 
+    // 참가자 이름 상태
+    private val _participantName = MutableLiveData<String>()
+    val participantName: LiveData<String> get() = _participantName
+
     /**
      * 특정 채팅방의 메시지를 로드
      */
@@ -54,6 +58,18 @@ class ChatDetailViewModel : ViewModel() {
         viewModelScope.launch {
             val result = repository.sendMessage(chatMessage)
             _messageStatus.value = result.isSuccess
+        }
+    }
+
+
+    /**
+     * 참가자 정보 로드
+     */
+    fun loadParticipantInfo(participantUid: String) {
+        viewModelScope.launch {
+            repository.getUserInfo(participantUid).collect { userInfo ->
+                _participantName.value = userInfo.id
+            }
         }
     }
 }
