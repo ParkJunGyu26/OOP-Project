@@ -24,16 +24,20 @@ class ChatAdapter(
             binding.ivProfile.setImageResource(R.drawable.user)
 
             // participants Map의 첫 번째 키 가져오기 (예: 사용자 ID)
-            val participantName = chatRoom.participants.keys.firstOrNull() ?: "Unknown"
+            val participantName = chatRoom.participants.firstOrNull()?.name ?: "Unknown"
             binding.tvName.text = participantName
 
-            binding.tvMessage.text = chatRoom.lastMessage
+            // 마지막 메시지와 시간 바인딩
+            binding.tvMessage.text = chatRoom.lastMessage.ifEmpty { "메시지가 없습니다." }
             binding.tvTime.text = formatTime(chatRoom.lastMessageTime)
         }
 
         private fun formatTime(timestamp: Long?): String {
-            val sdf = java.text.SimpleDateFormat("HH:mm", java.util.Locale.getDefault())
-            return sdf.format(java.util.Date(timestamp ?: 0))
+            if (timestamp == null || timestamp == 0L) {
+                return "시간 없음"
+            }
+            val sdf = java.text.SimpleDateFormat("hh:mm a", java.util.Locale.getDefault())
+            return sdf.format(java.util.Date(timestamp))
         }
     }
 

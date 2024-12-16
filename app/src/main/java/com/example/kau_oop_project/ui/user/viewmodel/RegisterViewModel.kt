@@ -47,8 +47,7 @@ data class ValidationState(
                        school.isValid && name.isValid && major.isValid
 }
 
-abstract class RegisterViewModel : ViewModel() {
-    abstract val emailCheckResult: Any
+class RegisterViewModel : ViewModel() {
     private val registerRepository = RegisterRepository()
     private val validator = RegisterValidator()
     

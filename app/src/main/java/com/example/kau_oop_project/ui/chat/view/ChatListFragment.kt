@@ -39,8 +39,8 @@ class ChatListFragment : Fragment() {
     private fun setupRecyclerView() {
         chatAdapter = ChatRoomAdapter { chatRoom ->
             val chatRoomId = chatRoom.id
-            val participantUid = chatRoom.participants.keys.firstOrNull() ?: "Unknown"
-            val action = ChatMainFragmentDirections.actionChatMainFragmentToChatDetailFragment(chatRoomId, participantUid)
+            val participantName = chatRoom.participants.firstOrNull()?.name ?: "Unknown"
+            val action = ChatMainFragmentDirections.actionChatMainFragmentToChatDetailFragment(chatRoomId, participantName)
             findNavController().navigate(action)
         }
         binding?.recyclerView?.apply {
@@ -48,7 +48,6 @@ class ChatListFragment : Fragment() {
             adapter = chatAdapter
         }
     }
-
     private fun observeViewModel() {
         chatViewModel.chatRooms.observe(viewLifecycleOwner) { rooms ->
             Log.d("ChatListFragment", "Loaded chat rooms: $rooms")

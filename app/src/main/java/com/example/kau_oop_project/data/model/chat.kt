@@ -2,11 +2,14 @@ package com.example.kau_oop_project.data.model
 
 data class ChatRoom(
     val id: String = "",
-    val participants: Map<String, Boolean> = emptyMap(),
+    val participants: List<Participant> = emptyList(),
     var lastMessage: String = "",
     var lastMessageTime: Long = 0L,
-    var participantName: String = ""
+)
 
+data class Participant(
+    val email: String = "",
+    val name: String = ""
 )
 
 data class ChatMessage(

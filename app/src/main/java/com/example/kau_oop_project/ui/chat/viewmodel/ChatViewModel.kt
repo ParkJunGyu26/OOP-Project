@@ -14,7 +14,7 @@ import kotlinx.coroutines.launch
  * 채팅 관련 기능을 처리하는 ViewModel
  */
 class ChatViewModel : ViewModel() {
-    private val repository = ChatRepository()
+    private val repository = ChatRepository<Any?>()
 
     // 채팅방 목록 상태
     private val _chatRooms = MutableLiveData<List<ChatRoom>>()
@@ -70,21 +70,20 @@ class ChatViewModel : ViewModel() {
 
         viewModelScope.launch {
             val result = repository.sendMessage(message)
-            _operationResult.value = result.getOrDefault(false) as? Boolean
+            _operationResult.value = if (result.getOrDefault(false) is Boolean) {
+                result.getOrDefault(false) as Boolean
+            } else {
+                false
+            }
         }
     }
 
     /**
      * 채팅방 생성
      */
-    fun createChatRoom(chatRoom: ChatRoom?) {
-        if (chatRoom == null) {
-            _operationResult.value = false
-            return
-        }
-
+    fun createChatRoom(chatRoom: ChatRoom) {
         viewModelScope.launch {
-            val result = repository.createChatRoom(chatRoom)
+            val result = repository.createChatRoom(chatRoom) // ChatRoom 객체를 전달
             if (result.isSuccess) {
                 _operationResult.value = true
             } else {

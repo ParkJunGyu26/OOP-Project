@@ -17,6 +17,7 @@ import com.example.kau_oop_project.ui.user.viewmodel.RegisterViewModel
 import com.example.kau_oop_project.repository.UserRepository
 import com.example.kau_oop_project.repository.ChatRepository
 import androidx.lifecycle.lifecycleScope
+import com.example.kau_oop_project.data.model.Participant
 import kotlinx.coroutines.launch
 import java.util.UUID
 
@@ -24,7 +25,6 @@ class ChatMainFragment : Fragment() {
     private var binding: FragmentChatMainBinding? = null
     private lateinit var pagerAdapter: ChatPagerAdapter
     private val viewModel: ChatViewModel by activityViewModels()
-    private val registerViewModel: RegisterViewModel by activityViewModels()
     private val userRepository = UserRepository()
 
     /**
@@ -59,7 +59,7 @@ class ChatMainFragment : Fragment() {
 
     private fun logExistingEmails() {
         viewLifecycleOwner.lifecycleScope.launch {
-            ChatRepository().logExistingEmails()
+            ChatRepository<Any?>().logExistingEmails()
         }
     }
 
@@ -97,7 +97,10 @@ class ChatMainFragment : Fragment() {
             val userSnapshot = userRepository.findUserByEmail(email)
             if (userSnapshot != null && userSnapshot.exists()) {
                 val chatRoomId = UUID.randomUUID().toString()
-                val chatRoom = ChatRoom(id = chatRoomId, participants = mapOf(emailKey to true))
+                val chatRoom = ChatRoom(
+                    id = chatRoomId,
+                    participants = listOf(Participant(email = email, name = userSnapshot.child("name").getValue(String::class.java) ?: "Unknown"))
+                )
                 viewModel.createChatRoom(chatRoom)
                 viewModel.operationResult.observe(viewLifecycleOwner) { success ->
                     if (success) {

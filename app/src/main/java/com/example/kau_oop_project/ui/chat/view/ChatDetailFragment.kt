@@ -43,23 +43,31 @@ class ChatDetailFragment : Fragment() {
         val args = ChatDetailFragmentArgs.fromBundle(requireArguments())
         val chatRoomId = args.chatRoomId
         val participantUid = args.participantUid
-        Log.d("ChatDetailFragment", "participantUid: $participantUid")
+        Log.d("ChatDetailFragment", "participantUid: $participantUid") // 상대방 이메일 주소
 
+        // ViewModel을 통해 참가자 정보 로드
         viewModel.loadParticipantInfo(participantUid)
 
         viewModel.participantName.observe(viewLifecycleOwner) { name ->
+            Log.d("ChatDetailFragment", "participantName: $name")
             binding?.tvTitle?.text = name
             binding?.name?.text = name
         }
 
         setupRecyclerView()
-        setupMessageInput(chatRoomId)
+        setupUI(chatRoomId)
 
+        // 메시지 로딩
         viewModel.loadMessages(chatRoomId)
 
         binding?.btnAdd?.setOnClickListener {
+            // attachment_menu의 현재 상태 확인
             val menu = binding?.attachmentMenu
-            menu?.visibility = if (menu?.visibility == View.GONE) View.VISIBLE else View.GONE
+            if (menu?.visibility == View.GONE) {
+                menu.visibility = View.VISIBLE
+            } else {
+                menu?.visibility = View.GONE
+            }
         }
     }
 
@@ -88,32 +96,48 @@ class ChatDetailFragment : Fragment() {
         }
     }
 
-    private fun setupMessageInput(chatRoomId: String) {
+    private fun setupUI(chatRoomId: String) {
         val senderId = userViewModel.currentUser.value?.uid
         Log.d("ChatDetailFragment", "setupUI: senderId=$senderId")
 
+        // EditText에 키 이벤트 리스너 추가
         binding?.editMessage?.setOnKeyListener { _, keyCode, event ->
             if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
-                sendMessage(chatRoomId, senderId)
-                true
+                // Enter 키가 눌렸을 때 메시지 전송
+                val messageText = binding?.editMessage?.text.toString()
+                if (messageText.isNotEmpty() && senderId != null) {
+                    val chatMessage = ChatMessage(
+                        id = "",
+                        chatRoomId = chatRoomId,
+                        senderId = senderId,
+                        message = messageText,
+                        timestamp = System.currentTimeMillis()
+                    )
+                    viewModel.sendMessage(chatRoomId, senderId, messageText)
+                    binding?.editMessage?.text?.clear()
+                }
+                true // 이벤트 소비
             } else {
-                false
+                false // 다른 키 이벤트는 정상 처리
             }
         }
 
         binding?.btnSend?.setOnClickListener {
-            sendMessage(chatRoomId, senderId)
-        }
-    }
-
-    private fun sendMessage(chatRoomId: String, senderId: String?) {
-        val messageText = binding?.editMessage?.text.toString()
-        if (messageText.isNotEmpty() && senderId != null) {
-            viewModel.sendMessage(chatRoomId, senderId, messageText)
-            binding?.editMessage?.text?.clear()
-        } else {
-            Log.e("ChatDetailFragment", "Sender ID is null or message is empty")
-            Toast.makeText(requireContext(), "Failed to send message. Please try again.", Toast.LENGTH_SHORT).show()
+            val messageText = binding?.editMessage?.text.toString()
+            if (messageText.isNotEmpty() && senderId != null) {
+                val chatMessage = ChatMessage(
+                    id = "",
+                    chatRoomId = chatRoomId,
+                    senderId = senderId,
+                    message = messageText,
+                    timestamp = System.currentTimeMillis()
+                )
+                viewModel.sendMessage(chatRoomId, senderId, messageText)
+                binding?.editMessage?.text?.clear()
+            } else {
+                Log.e("ChatDetailFragment", "Sender ID is null or message is empty")
+                Toast.makeText(requireContext(), "Failed to send message. Please try again.", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 

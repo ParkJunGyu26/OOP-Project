@@ -25,32 +25,23 @@ class ChatDetailRepository {
     suspend fun sendMessage(message: ChatMessage): Result<Boolean> {
         return withContext(Dispatchers.IO) {
             try {
-                // 메시지 ID 생성
                 val messageId = messagesRef.push().key ?: throw Exception("Failed to generate message ID")
 
-                // 메시지 데이터 추가 (messages 경로에 저장)
-                val messagePath = "chats/messages/$messageId"
-                messagesRef.child(messageId).setValue(message).await()
-
-                // 채팅방의 lastMessage, lastMessageTime, participantName 업데이트
-                val roomPath = "chats/rooms/${message.chatRoomId}"
-                val updates = mapOf(
-                    "$roomPath/lastMessage" to message.message,
-                    "$roomPath/lastMessageTime" to message.timestamp,
-                    "$roomPath/participantName" to message.senderId
+                // 메시지 저장
+                val updates = hashMapOf<String, Any>(
+                    "chats/messages/$messageId" to message,
+                    "chats/rooms/${message.chatRoomId}/lastMessage" to message.message,
+                    "chats/rooms/${message.chatRoomId}/lastMessageTime" to message.timestamp
                 )
 
-                // 채팅방 데이터 업데이트
                 database.reference.updateChildren(updates).await()
-
                 Result.success(true)
             } catch (e: Exception) {
-                Log.e("ChatRepository", "Error sending message: ${e.message}")
+                Log.e("ChatDetailRepository", "Error sending message: ${e.message}")
                 Result.failure(e)
             }
         }
     }
-
 
 
     fun getMessages(chatRoomId: String): Flow<List<ChatMessage>> = callbackFlow {
@@ -106,7 +97,7 @@ class ChatDetailRepository {
                 close(error.toException())
             }
         }
-        
+
         userRef.addListenerForSingleValueEvent(listener)
         awaitClose { userRef.removeEventListener(listener) }
     }
