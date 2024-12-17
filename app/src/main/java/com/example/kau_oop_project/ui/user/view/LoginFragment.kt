@@ -73,21 +73,22 @@ class LoginFragment : Fragment() {
 
     private fun observeViewModel() {
         loginViewModel.loginResult.observe(viewLifecycleOwner) { result ->
-            when (result) {
-                is LoginResponse.Success -> {
-                    userViewModel.loginUser(result)
-                    findNavController().navigate(R.id.action_loginFragment_to_mypageFragment)
-                }
-                is LoginResponse.Error -> {
-                    binding?.txtError?.text = "이메일 또는 비밀번호가 올바르지 않습니다."
-                    result.logError()
+            result?.let {
+                when (result) {
+                    is LoginResponse.Success -> {
+                        userViewModel.loginUser(result)
+                        findNavController().navigate(R.id.action_loginFragment_to_mypageFragment)
+                    }
+                    is LoginResponse.Error -> {
+                        binding?.txtError?.text = "이메일 또는 비밀번호가 올바르지 않습니다."
+                        result.logError()
+                    }
                 }
             }
         }
 
         loginViewModel.emailCheck.observe(viewLifecycleOwner) { state ->
             binding?.apply {
-
                 txtError.apply {
                     text = state.message
                     if (state.isValid) btnLogin.isEnabled = true
