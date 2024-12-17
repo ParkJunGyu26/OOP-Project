@@ -8,6 +8,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.kau_oop_project.R
 import com.example.kau_oop_project.data.model.ChatRoom
 import com.example.kau_oop_project.databinding.ItemChatBinding
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class ChatRoomAdapter(private val onItemClick: (ChatRoom) -> Unit) : ListAdapter<ChatRoom, ChatRoomAdapter.ViewHolder>(ChatRoomDiffCallback()) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -30,7 +33,14 @@ class ChatRoomAdapter(private val onItemClick: (ChatRoom) -> Unit) : ListAdapter
         }
 
         fun bind(chatRoom: ChatRoom) {
-            // ... 데이터 바인딩 ...
+            // 데이터 바인딩
+            // name은 user에서 불러와야 함
+            binding.tvMessage.text = chatRoom.lastMessage
+            
+            // 시간 포맷팅
+            val dateFormat = SimpleDateFormat("hh:mm a", Locale.getDefault()) // 원하는 형식으로 변경
+            val formattedTime = dateFormat.format(Date(chatRoom.lastMessageTime))
+            binding.tvTime.text = formattedTime
         }
     }
 }

@@ -91,36 +91,6 @@ class ChatRepository<T> {
         }
     }
 
-    // 참가자 추가
-    suspend fun addParticipant(chatRoomId: String, participant: Participant): Result<Boolean> {
-        return withContext(Dispatchers.IO) {
-            try {
-                val participantsRef = roomsRef.child(chatRoomId).child("participants")
-                val currentParticipants = participantsRef.get().await().children.mapNotNull { it.getValue(Participant::class.java) }
-
-                if (currentParticipants.none { it.email == participant.email }) {
-                    participantsRef.setValue(currentParticipants + participant).await()
-                }
-                Result.success(true)
-            } catch (e: Exception) {
-                Log.e("ChatRepository", "Error adding participant: ${e.message}")
-                Result.failure(e)
-            }
-        }
-    }
-
-    // 사용자 이름 가져오기
-    suspend fun getUserName(uid: String): Result<String> {
-        return withContext(Dispatchers.IO) {
-            try {
-                val snapshot = usersRef.child(uid).child("name").get().await()
-                Result.success(snapshot.getValue(String::class.java) ?: "Unknown")
-            } catch (e: Exception) {
-                Result.failure(e)
-            }
-        }
-    }
-
     // 채팅방 목록 가져오기
     suspend fun getChatRooms(userId: String?): Result<List<ChatRoom>> {
         return withContext(Dispatchers.IO) {
