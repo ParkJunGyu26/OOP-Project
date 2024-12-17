@@ -27,8 +27,8 @@ class ReplyAdapter(private val userViewModel: UserViewModel,private val postView
     inner class ReplyViewHolder(private val binding: ItemReplyBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(reply: Reply) {
             // 댓글 작성자와 내용 설정
-            val replyUserName=userViewModel.postUsersInfoList.value?.get(reply.replyAuthorId)?.name
-            val replyUserProfileImageUrl=userViewModel.postUsersInfoList.value?.get(reply.replyAuthorId)?.profileImage
+            val replyUserName=userViewModel.repliesUsersInfoList.value?.get(reply.replyAuthorId)?.name
+            val replyUserProfileImageUrl=userViewModel.repliesUsersInfoList.value?.get(reply.replyAuthorId)?.profileImage
             binding.replyUserName.text = replyUserName // 댓글 작성자
             Glide.with(binding.userProfileImage.context)
                 .load(replyUserProfileImageUrl) // 이미지 URL

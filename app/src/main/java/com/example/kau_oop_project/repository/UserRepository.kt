@@ -32,7 +32,7 @@ open class UserRepository {
                     uid?.let {
                         val snapshot = userRef.child(uid).get().await()
                         val name = snapshot.child("name").getValue(String::class.java)
-                        val email = snapshot.child("email").getValue(String::class.java)
+                        val email = snapshot.child("userEmail").getValue(String::class.java)
 
                         if (name != null && email != null) {
                             val profileImageUrl = snapshot.child("profileImageUrl")

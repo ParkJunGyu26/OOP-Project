@@ -26,6 +26,9 @@ class UserViewModel : ViewModel() {
     private val _postUsersInfoList = MutableLiveData<HashMap<String, UserInfo>>()
     val postUsersInfoList: LiveData<HashMap<String, UserInfo>> = _postUsersInfoList
 
+    private val _repliesUsersInfoList = MutableLiveData<HashMap<String, UserInfo>>()
+    val repliesUsersInfoList: LiveData<HashMap<String, UserInfo>> = _repliesUsersInfoList
+
     fun loginUser(loginResponse: LoginResponse.Success) {
         _currentUser.value = loginResponse.uid
     }
@@ -44,10 +47,9 @@ class UserViewModel : ViewModel() {
                 is UserResponse.Success -> {
                     when (domain) {
                         1 -> _postUsersInfoList.value = userInfo.usersInfo  // 게시판
-                        2 -> _userInfoList.value = userInfo.usersInfo  // 채팅
+                        2 -> _repliesUsersInfoList.value = userInfo.usersInfo // 댓글
+                        3 -> _userInfoList.value = userInfo.usersInfo  // 채팅
                     }
-                    Log.d("PostUserViewModel", "getUsersResultPost ${postUsersInfoList.value}")
-                    Log.d("PostUserViewModel", "getUsersResultUser ${userInfoList.value}")
                 }
                 is UserResponse.Error -> _userInfoList.value = hashMapOf()  // 에러 시 빈 HashMap
             }
