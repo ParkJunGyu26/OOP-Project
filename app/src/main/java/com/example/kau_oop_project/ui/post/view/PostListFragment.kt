@@ -1,5 +1,7 @@
 package com.example.kau_oop_project.ui.post.view
 
+import android.content.Context
+import android.graphics.Rect
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -13,14 +15,17 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.kau_oop_project.R
 import com.example.kau_oop_project.databinding.FragmentPostListBinding
 import com.example.kau_oop_project.ui.post.viewmodel.PostViewModel
+import com.example.kau_oop_project.ui.user.viewmodel.UserViewModel
 
 class PostListFragment : Fragment() {
 
     private var binding: FragmentPostListBinding? = null
     private val postViewModel: PostViewModel by activityViewModels()
+    private val userViewModel: UserViewModel by activityViewModels()
     private lateinit var adapter: PostListAdapter
 
     override fun onCreateView(
@@ -64,6 +69,10 @@ class PostListFragment : Fragment() {
             findNavController().navigate(R.id.postWriteFragment)
         }
 
+        binding?.btnUpload?.setOnClickListener {
+            Log.d("PostListFragment", "Posts search options ${userViewModel.currentUser.value?.uid}")
+        }
+
         binding?.btnTagAdd?.setOnClickListener {
             // 다이얼로그 레이아웃을 설정
             val dialogView = LayoutInflater.from(context).inflate(R.layout.popup_post_tag_add, null)
@@ -99,6 +108,7 @@ class PostListFragment : Fragment() {
             adapter.updatePosts(posts)
         }
     }
+
 
     private fun updateTags(tags: List<String>) {
         // containerTags의 모든 뷰 제거
@@ -137,6 +147,8 @@ class PostListFragment : Fragment() {
             parentLayout.addView(tagButton)
         }
     }
+
+
 
     override fun onDestroyView() {
         super.onDestroyView()

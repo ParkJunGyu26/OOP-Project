@@ -17,23 +17,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
+            android:background="@drawable/border_rect_black"
             app:layout_constraintTop_toTopOf="parent">
-
-            <Button
-                android:id="@+id/btn_fix"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:contentDescription="수정 버튼"
-                android:text="수정"
-                app:layout_constraintEnd_toStartOf="@+id/btn_delete"
-                app:layout_constraintTop_toTopOf="parent" />
 
             <Button
                 android:id="@+id/btn_delete"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
+                android:layout_marginEnd="5dp"
                 android:contentDescription="삭제 버튼"
                 android:text="삭제"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -45,12 +37,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
                 android:layout_marginTop="5dp"
-                android:layout_marginBottom="5dp"
                 android:text="[태그]"
-                android:textColor="#333333"
-                android:textSize="16sp"
+                android:textColor="#3C82F5"
+                android:textSize="24sp"
                 android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -58,7 +48,7 @@
                 android:id="@+id/post_detail_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
+                android:layout_marginStart="10dp"
                 android:layout_marginTop="5dp"
                 android:layout_marginBottom="5dp"
                 android:text="제목"
@@ -66,8 +56,8 @@
                 android:textSize="20sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/post_detail_tag"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/post_detail_tag" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -77,16 +67,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@+id/constraintLayout">
-
-            <TextView
-                android:id="@+id/post_detail_recommend_count"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:layout_marginEnd="5dp"
-                android:text="추천 3"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
                 android:id="@+id/post_detail_author_profile"
@@ -114,16 +94,17 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:layout_marginEnd="2dp"
+                android:layout_marginEnd="5dp"
                 android:text="조회 111"
                 android:textColor="#666666"
-                app:layout_constraintEnd_toStartOf="@+id/post_detail_recommend_count"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/post_detail_author"
                 android:layout_width="62dp"
                 android:layout_height="17dp"
+                android:layout_marginStart="5dp"
                 android:layout_marginTop="7dp"
                 android:text="작성자"
                 android:textColor="#666666"
@@ -148,48 +129,42 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <!-- ConstraintLayout 3: 댓글 및 좋아요/공유 버튼 -->
+
+        <!-- RecyclerView: 댓글 목록 -->
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraintLayout3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@+id/constraintLayout2">
+            app:layout_constraintTop_toBottomOf="@+id/constraintLayout2"
+            android:background="@drawable/border_rect_black"
+            tools:layout_editor_absoluteX="0dp">
 
-            <Button
+            <ImageButton
                 android:id="@+id/btn_recommend"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="추천"
-                app:layout_constraintEnd_toStartOf="@+id/btn_scrap" />
-
-            <Button
-                android:id="@+id/btn_scrap"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="스크랩"
-                app:layout_constraintEnd_toStartOf="@+id/btn_share" />
-
-            <Button
-                android:id="@+id/btn_share"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="공유"
-                app:layout_constraintEnd_toEndOf="parent" />
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:layout_marginTop="10dp"
+                android:src="@drawable/baseline_star_24"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/post_detail_reply_count"
+                android:id="@+id/post_detail_recommend_count"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:text="댓글 n개"
+                android:layout_marginBottom="10dp"
+                android:text="추천수"
+                android:textAlignment="center"
                 android:textColor="#333333"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintEnd_toEndOf="@+id/btn_recommend"
+                app:layout_constraintStart_toStartOf="@+id/btn_recommend"
+                app:layout_constraintTop_toBottomOf="@+id/btn_recommend" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <!-- RecyclerView: 댓글 목록 -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/reply_list"
             android:layout_width="match_parent"
@@ -205,7 +180,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/reply_list">
+            app:layout_constraintTop_toBottomOf="@+id/reply_list"
+            android:background="@drawable/border_rect_black">
 
             <EditText
                 android:id="@+id/input_post_reply"

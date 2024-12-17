@@ -3,23 +3,42 @@ package com.example.kau_oop_project.data.model.response
 import android.util.Log
 import com.example.kau_oop_project.data.model.User
 
-sealed class MypageResponse : CommonResponse() {
-    class Success(
-        val user: User
-    ) : MypageResponse()
+data class MyInfo (
+    val uid: String,
+    var name: String,
+    var userEmail: String,
+    var school: String,
+    var major: String,
+    var profileImage: String
+)
 
-    sealed class Error : MypageResponse() {
-        abstract fun logError()
+sealed class MypageResponse {
+    data class Success(
+        val userInfo: MyInfo
+    ) : MypageResponse(), CommonResponse.Success
 
+    sealed class Error : MypageResponse(), CommonResponse.Error {
         data object UserNotFound : Error() {
             override fun logError() {
-                Log.e("MypageError", "사용자 정보를 찾을 수 없습니다.")
+                Log.e("MypageError", "사용자를 찾을 수 없습니다.")
             }
         }
 
-        class Unknown(private val message: String) : Error() {
+        data object ImageUploadFailed : Error() {
             override fun logError() {
-                Log.e("MypageError", "예상치 못한 에러가 발생했습니다: $message")
+                Log.e("MypageError", "이미지 업로드 실패.")
+            }
+        }
+
+        data object UpdateFailed : Error() {
+            override fun logError() {
+                Log.e("MypageError", "정보 업데이트 실패")
+            }
+        }
+
+        data object Unknown: Error() {
+            override fun logError() {
+                Log.e("MypageError", "알 수 없는 에러")
             }
         }
     }

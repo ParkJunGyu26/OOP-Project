@@ -8,25 +8,27 @@ class LoginRepository : UserRepository() {
     suspend fun verifyLogin(email: String, password: String): LoginResponse {
         return withContext(Dispatchers.IO) {
             try {
-                val snapshot = findUserByEmail(email)
-                snapshot?.children?.firstOrNull()?.let { userSnapshot ->
-                    val storedPassword = userSnapshot.child("password").getValue(String::class.java)
-
-                    if (storedPassword == password) {
-                        LoginResponse.Success(
-                            uid = userSnapshot.key ?: "",
-                            name = userSnapshot.child("name").getValue(String::class.java) ?: "",
-                            userEmail = email,
-                            school = userSnapshot.child("school").getValue(String::class.java) ?: "",
-                            major = userSnapshot.child("major").getValue(String::class.java) ?: "",
-                            profileImageUrl = userSnapshot.child("profileImageUrl").getValue(String::class.java) ?: ""
-                        )
-                    } else {
-                        LoginResponse.Error.InvalidPassword
+                findUserByEmail(email)?.let { snapshot ->
+                    if (!snapshot.exists()) {
+                        return@withContext LoginResponse.Error.UserNotFound
                     }
-                } ?: LoginResponse.Error.UserNotFound
+
+                    snapshot.children.firstOrNull()?.let { userSnapshot ->
+                        val uid = userSnapshot.key ?: 
+                            return@withContext LoginResponse.Error.Unknown
+
+                        userSnapshot.child("password").getValue(String::class.java)?.let { storedPassword ->
+                            return@withContext if (storedPassword == password) {
+                                LoginResponse.Success(uid)
+                            } else {
+                                LoginResponse.Error.WrongPassword
+                            }
+                        } ?: LoginResponse.Error.Unknown
+                    } ?: LoginResponse.Error.Unknown
+                } ?: LoginResponse.Error.Unknown
+
             } catch (e: Exception) {
-                LoginResponse.Error.Unknown(e.message ?: "Unknown")
+                LoginResponse.Error.Unknown
             }
         }
     }

@@ -1,8 +1,14 @@
 package com.example.kau_oop_project.data.model.response
 
-sealed class CommonResponse {
-    open class Success<T>(val data: T) : CommonResponse()
-    sealed class Error : CommonResponse() {
-        abstract fun logError()
+sealed interface CommonResponse {
+    val success: Boolean
+    
+    interface Success : CommonResponse {
+        override val success: Boolean get() = true
+    }
+    
+    interface Error : CommonResponse {
+        override val success: Boolean get() = false
+        fun logError()
     }
 }

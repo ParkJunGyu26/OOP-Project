@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <Button
+        android:id="@+id/btn_start_chat"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="1:1 채팅 시작하기" />
+
+    <Button
+        android:id="@+id/btn_delete_reply"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="댓글 삭제하기"
+        android:layout_marginTop="8dp" />
+</LinearLayout>

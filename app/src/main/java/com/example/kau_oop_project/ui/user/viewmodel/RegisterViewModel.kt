@@ -10,6 +10,7 @@ import com.example.kau_oop_project.repository.RegisterRepository
 import com.example.kau_oop_project.data.validator.RegisterValidator
 import com.example.kau_oop_project.data.model.validation.ValidationResult
 import kotlinx.coroutines.launch
+import java.util.*
 
 class FieldValidation(
     val message: String = "",
@@ -85,14 +86,19 @@ class RegisterViewModel : ViewModel() {
     fun registerUser(email: String, password: String, school: String, name: String, major: String) {
         if (_isRegisterEnabled.value == true) {
             viewModelScope.launch {
-                val user = User(
-                    userEmail = email.trim(),
-                    password = password,
-                    school = school.trim(),
-                    name = name.trim(),
-                    major = major.trim()
-                )
-                _registerResult.value = registerRepository.registerUser(user)
+                try {
+                    val user = User(
+                        userEmail = email.trim(),
+                        password = password,
+                        school = school.trim(),
+                        name = name.trim(),
+                        major = major.trim()
+                    )
+                    
+                    _registerResult.value = registerRepository.registerUser(user)
+                } catch (e: Exception) {
+                    _registerResult.value = RegisterResponse.Error.Unknown
+                }
             }
         }
     }
