@@ -32,7 +32,9 @@ class UserViewModel : ViewModel() {
 
     // 게시판 댓글과 채팅의 유저 정보( domain : 1(게시판), 2(채팅) )
     fun getUsers(uidList: List<String?>, domain: Int) {
+        Log.d("PostUserViewModel", "Launch with : $uidList")
         if (uidList.isEmpty()) {
+            Log.d("PostUserViewModel", "No uidList : $uidList")
             _userInfoList.value = hashMapOf()  // 빈 HashMap 생성
             return
         }
@@ -44,6 +46,8 @@ class UserViewModel : ViewModel() {
                         1 -> _postUsersInfoList.value = userInfo.usersInfo  // 게시판
                         2 -> _userInfoList.value = userInfo.usersInfo  // 채팅
                     }
+                    Log.d("PostUserViewModel", "getUsersResultPost ${postUsersInfoList.value}")
+                    Log.d("PostUserViewModel", "getUsersResultUser ${userInfoList.value}")
                 }
                 is UserResponse.Error -> _userInfoList.value = hashMapOf()  // 에러 시 빈 HashMap
             }

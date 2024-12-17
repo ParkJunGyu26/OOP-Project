@@ -12,6 +12,7 @@ import com.example.kau_oop_project.ui.post.viewmodel.PostViewModel
 import androidx.fragment.app.activityViewModels
 import com.example.kau_oop_project.R
 import android.widget.Button
+import com.bumptech.glide.Glide
 import com.example.kau_oop_project.data.model.Reply
 import com.example.kau_oop_project.ui.user.viewmodel.UserViewModel
 import java.text.SimpleDateFormat
@@ -26,10 +27,13 @@ class ReplyAdapter(private val userViewModel: UserViewModel,private val postView
     inner class ReplyViewHolder(private val binding: ItemReplyBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(reply: Reply) {
             // 댓글 작성자와 내용 설정
-            val replyUserName=userViewModel.userInfoList.value?.get(reply.replyAuthorId)?.name
-            val replyUserProfileImageUrl=userViewModel.userInfoList.value?.get(reply.replyAuthorId)?.profileImage
+            val replyUserName=userViewModel.postUsersInfoList.value?.get(reply.replyAuthorId)?.name
+            val replyUserProfileImageUrl=userViewModel.postUsersInfoList.value?.get(reply.replyAuthorId)?.profileImage
             binding.replyUserName.text = replyUserName // 댓글 작성자
-            binding.userProfileImage.setImageResource(replyUserProfileImageUrl) // 댓글
+            Glide.with(binding.userProfileImage.context)
+                .load(replyUserProfileImageUrl) // 이미지 URL
+                .error(R.drawable.default_image) // 로드 실패 시 보여줄 기본 이미지
+                .into(binding.userProfileImage)
             binding.replyContent.text = reply.replyContent // 댓글 내용
             binding.replyWrittenTime.text=formatTime(reply.replyTimeStamp) // 작성 시간
 

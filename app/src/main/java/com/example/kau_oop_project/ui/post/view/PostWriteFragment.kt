@@ -67,7 +67,7 @@ class PostWriteFragment : Fragment() {
 
                 // 업로드 결과 관찰
                 var isToasted = false
-                postViewModel.UploadResult.observe(viewLifecycleOwner) { result ->
+                postViewModel.uploadResult.observe(viewLifecycleOwner) { result ->
                     if (!isToasted) {
                         isToasted=true
                         when {

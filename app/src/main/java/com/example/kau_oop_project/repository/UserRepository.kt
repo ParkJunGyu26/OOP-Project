@@ -1,5 +1,6 @@
 package com.example.kau_oop_project.repository
 
+import android.util.Log
 import com.example.kau_oop_project.data.model.User
 import com.example.kau_oop_project.data.model.response.UserInfo
 import com.example.kau_oop_project.data.model.response.UserResponse
@@ -47,6 +48,7 @@ open class UserRepository {
                         }
                     } ?: UserResponse.Error.UserNotFound
                 }
+                Log.d("PostUserRepository", "userInfoMap : $userInfoMap")
 
                 if (userInfoMap.isEmpty()) {
                     UserResponse.Error.UserNotFound
