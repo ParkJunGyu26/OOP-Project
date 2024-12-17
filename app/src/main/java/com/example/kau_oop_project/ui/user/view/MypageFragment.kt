@@ -64,7 +64,7 @@ class MypageFragment : Fragment() {
                             Toast.makeText(context, "알 수 없는 에러", Toast.LENGTH_SHORT).show()
                         }
                     }
-                    result.logError()  // 에러 로깅
+//                    result.logError()  // 에러 로깅
                 }
             }
         }

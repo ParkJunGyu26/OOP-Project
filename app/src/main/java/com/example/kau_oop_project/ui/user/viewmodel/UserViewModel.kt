@@ -26,6 +26,7 @@ class UserViewModel : ViewModel() {
     private val _postUsersInfoList = MutableLiveData<HashMap<String, UserInfo>>()
     val postUsersInfoList: LiveData<HashMap<String, UserInfo>> = _postUsersInfoList
 
+    // 댓글에서 필요한 유저 정보
     private val _repliesUsersInfoList = MutableLiveData<HashMap<String, UserInfo>>()
     val repliesUsersInfoList: LiveData<HashMap<String, UserInfo>> = _repliesUsersInfoList
 
@@ -33,7 +34,7 @@ class UserViewModel : ViewModel() {
         _currentUser.value = loginResponse.uid
     }
 
-    // 게시판 댓글과 채팅의 유저 정보( domain : 1(게시판), 2(채팅) )
+    // 게시판 댓글과 채팅의 유저 정보( domain : 1(게시판), 2(댓글), 3(채팅) )
     fun getUsers(uidList: List<String?>, domain: Int) {
         Log.d("PostUserViewModel", "Launch with : $uidList")
         if (uidList.isEmpty()) {
