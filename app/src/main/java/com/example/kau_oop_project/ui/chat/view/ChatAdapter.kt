@@ -29,7 +29,7 @@ class ChatAdapter(
 
             // 마지막 메시지와 시간 바인딩
             binding.tvMessage.text = chatRoom.lastMessage.ifEmpty { "메시지가 없습니다." }
-            binding.tvTime.text = formatTime(chatRoom.lastMessageTime)
+            binding.tvTime.text = formatTime(chatRoom.lastMessageTime) //
         }
 
         private fun formatTime(timestamp: Long?): String {
