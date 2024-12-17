@@ -116,6 +116,10 @@ class PostDetailFragment : Fragment() {
         binding?.btnRecommend?.setOnClickListener {
             postViewModel.incrementRecommendCount()
         }
+
+        binding?.btnFix?.setOnClickListener{
+            findNavController().navigate(R.id.postWriteFragment)
+        }
     }
 
     private fun loadPost(postId: String) {

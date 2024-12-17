@@ -24,12 +24,13 @@ class PostRepository {
             val databaseId = postsRef.push().key ?: return@withContext
 
             // timestamp를 현재 시간으로 설정
-            val writetenTime = System.currentTimeMillis()
+            val writtenTime = System.currentTimeMillis()
 
             // 내용 입력란을 줄 단위로 분리하여 PostContent 리스트 생성
             val postContents = content.lines().map {
                 PostContent(type = ContentType.TEXT, content = it)
             }
+
             // 새로운 Post 객체 생성
             val newPost = Post(
                 postId = databaseId,
@@ -40,13 +41,40 @@ class PostRepository {
                 postAuthorId = uid,
                 postContent = postContents,
                 postReplyIdList = emptyList(),
-                postTimeStamp = writetenTime
+                postTimeStamp = writtenTime
             )
 
             // Firebase에 새로운 Post 저장
             postsRef.child(databaseId).setValue(newPost).await()
         }
     }
+
+    suspend fun updatePost(postId: String, title: String, tag: String, content: String,uid: String) {
+        withContext(Dispatchers.IO) {
+            // 해당 postId의 경로 참조
+            val postRef = postsRef.child(postId)
+
+            // timestamp를 현재 시간으로 설정
+            val updatedTime = System.currentTimeMillis()
+
+            // 내용 입력란을 줄 단위로 분리하여 PostContent 리스트 생성
+            val updatedPostContents = content.lines().map {
+                PostContent(type = ContentType.TEXT, content = it)
+            }
+
+            // 수정할 필드와 값을 Map으로 준비
+            val updatedValues = mapOf<String, Any>(
+                "postTitle" to title,             // 제목 업데이트
+                "postTag" to tag,                 // 태그 업데이트
+                "postContent" to updatedPostContents, // 내용 업데이트
+                "postTimeStamp" to updatedTime    // 수정된 시간으로 업데이트
+            )
+
+            // Firebase에 업데이트 요청
+            postRef.updateChildren(updatedValues).await()
+        }
+    }
+
 
     suspend fun retrievePosts(user: String?, tags: List<String>?, input: String?): List<Post> {
         return withContext(Dispatchers.IO) {
@@ -130,6 +158,7 @@ class PostRepository {
                 replyAuthorId = uid,
                 replyContent = content
             )
+
             repliesRef.child(replyId).setValue(reply).await()
 
             // 게시물 정보를 가져오기 위한 postRef
