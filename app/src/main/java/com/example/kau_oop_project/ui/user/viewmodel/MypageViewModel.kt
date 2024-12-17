@@ -25,9 +25,6 @@ class MypageViewModel : ViewModel() {
     private val _updateResult = MutableLiveData<UpdateResponse>()
     val updateResult: LiveData<UpdateResponse> = _updateResult
 
-    // 현재 이미지가 기본 이미지인지 여부
-    private var isDefaultImage = false
-
     // 이미지 업로드 상태
     private val _imageUploadState = MutableLiveData<ImageUploadState>()
     val imageUploadState: LiveData<ImageUploadState> = _imageUploadState

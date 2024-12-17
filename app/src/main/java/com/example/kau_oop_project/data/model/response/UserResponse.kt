@@ -10,7 +10,7 @@ data class UserInfo(
 
 sealed class UserResponse {
     data class Success(
-        val usersInfo: List<UserInfo>
+        val usersInfo: HashMap<String, UserInfo>
     ) : UserResponse(), CommonResponse.Success
 
     sealed class Error : UserResponse(), CommonResponse.Error {
