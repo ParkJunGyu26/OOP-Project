@@ -60,4 +60,32 @@ open class UserRepository {
             }
         }
     }
+
+    suspend fun getUsersByUids(uids: List<String>): List<User> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val userList = mutableListOf<User>()
+
+                for (uid in uids) {
+                    val snapshot = userRef.child(uid).get().await()
+                    snapshot.child("name").getValue(String::class.java)?.let { name ->
+                        val profileImageUrl = snapshot.child("profileImageUrl")
+                            .getValue(String::class.java)
+                            ?: User().profileImageUrl
+
+                        userList.add(
+                            User(
+                                uid = uid,
+                                name = name,
+                                profileImageUrl = profileImageUrl
+                            )
+                        )
+                    }
+                }
+                userList
+            } catch (e: Exception) {
+                emptyList()
+            }
+        }
+    }
 }
