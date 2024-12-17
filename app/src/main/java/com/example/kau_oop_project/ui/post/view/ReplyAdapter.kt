@@ -42,7 +42,7 @@ class ReplyAdapter(private val userViewModel: UserViewModel,private val postView
                     .create()
 
                 // 유저 검사
-                val currentUserId = userViewModel.currentUser.value?.uid
+                val currentUserId = userViewModel.currentUser.value
                 val replyUserId = reply.replyAuthorId
 
                 if (currentUserId == replyUserId) {
@@ -55,7 +55,7 @@ class ReplyAdapter(private val userViewModel: UserViewModel,private val postView
 
                 // "1:1 채팅 시작하기" 버튼 클릭
                 btnStartChat.setOnClickListener {
-                    val currentUserId=userViewModel.currentUser.value?.uid
+                    val currentUserId=userViewModel.currentUser.value
                     val replyUserId=reply.replyAuthorId
 
                     Log.d("ReplyAdapter", "now user : $currentUserId, reply user id : $replyUserId")

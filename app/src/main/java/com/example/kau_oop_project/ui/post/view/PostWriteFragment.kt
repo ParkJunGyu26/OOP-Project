@@ -50,7 +50,7 @@ class PostWriteFragment : Fragment() {
             val title = inputTitle.text.toString()
             val tag = inputTag.text.toString()
             val content = inputContent.text.toString()
-            Log.d("PostWriteFragment", "current user id : ${userViewModel.currentUser.value?.uid}")
+            Log.d("PostWriteFragment", "current user id : ${userViewModel.currentUser.value}")
             // currentUser UID 가져오기
             userViewModel.currentUser.value?.let { user ->
                 // ViewModel에 업로드 요청

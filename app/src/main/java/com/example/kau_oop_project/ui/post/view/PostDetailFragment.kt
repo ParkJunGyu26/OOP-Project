@@ -48,7 +48,7 @@ class PostDetailFragment : Fragment() {
             post?.let { loadPost(it.postId) }
 
             // userViewModel의 currentUser와 postViewModel의 nowPost의 postAuthorId 비교하여 버튼 가시성 설정
-            val currentUserId = userViewModel.currentUser.value?.uid
+            val currentUserId = userViewModel.currentUser.value
             val postAuthorId = post?.postAuthorId
 
             if (currentUserId == postAuthorId) {
@@ -74,7 +74,7 @@ class PostDetailFragment : Fragment() {
             // currentUser가 존재하는 경우
             userViewModel.currentUser.value?.let { user ->
                 // ViewModel에 댓글 업로드 요청
-                postViewModel.uploadReply(replyContent, user.uid)
+                postViewModel.uploadReply(replyContent, user)
 
                 // 업로드 결과 관찰
                 postViewModel.UploadResult.observe(viewLifecycleOwner) { result ->

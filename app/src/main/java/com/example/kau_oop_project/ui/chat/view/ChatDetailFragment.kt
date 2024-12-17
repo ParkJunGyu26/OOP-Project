@@ -87,7 +87,7 @@ class ChatDetailFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
-        val currentUserId = userViewModel.currentUser.value?.uid ?: "defaultUserId"
+        val currentUserId = userViewModel.currentUser.value ?: "defaultUserId"
         messageAdapter = ChatMessageAdapter(currentUserId)
 
         binding?.recyclerMessages?.apply {
@@ -97,7 +97,7 @@ class ChatDetailFragment : Fragment() {
     }
 
     private fun setupUI(chatRoomId: String) {
-        val senderId = userViewModel.currentUser.value?.uid
+        val senderId = userViewModel.currentUser.value
         Log.d("ChatDetailFragment", "setupUI: senderId=$senderId")
 
         // EditText에 키 이벤트 리스너 추가

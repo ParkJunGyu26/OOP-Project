@@ -32,7 +32,7 @@ class ChatListFragment : Fragment() {
         observeViewModel()
 
         // 사용자 ID를 가져와서 채팅방 목록을 로드합니다.
-        val userId = userViewModel.currentUser.value?.uid
+        val userId = userViewModel.currentUser.value
         chatViewModel.loadChatRooms(userId) // 채팅방 목록 로드 호출
     }
 

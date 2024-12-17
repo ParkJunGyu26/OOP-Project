@@ -1,7 +1,5 @@
 package com.example.kau_oop_project.ui.post.view
 
-import android.content.Context
-import android.graphics.Rect
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -15,7 +13,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.kau_oop_project.R
 import com.example.kau_oop_project.databinding.FragmentPostListBinding
 import com.example.kau_oop_project.ui.post.viewmodel.PostViewModel
@@ -70,7 +67,7 @@ class PostListFragment : Fragment() {
         }
 
         binding?.btnUpload?.setOnClickListener {
-            Log.d("PostListFragment", "Posts search options ${userViewModel.currentUser.value?.uid}")
+            Log.d("PostListFragment", "Posts search options ${userViewModel.currentUser.value}")
         }
 
         binding?.btnTagAdd?.setOnClickListener {
