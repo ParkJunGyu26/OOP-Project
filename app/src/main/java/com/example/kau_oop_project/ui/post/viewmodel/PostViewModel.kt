@@ -48,6 +48,7 @@ class PostViewModel : ViewModel() {
                 val postList: List<Post> = postRepository.retrievePosts(searchUserId,searchTags,searchInput)
                 _posts.value=postList
             } catch (e: Exception) {
+                _uploadResult.value = Result.failure(Exception("읽어오기 실패"))
                 Log.e("PostViewModel", "Error retrieving posts: ${e.message}")
             }
         }
@@ -75,6 +76,7 @@ class PostViewModel : ViewModel() {
         // 유효성 검사 통과 후, Repository에 데이터 전달
         viewModelScope.launch {
             try {
+                Log.d("PostViewModel", "nowPostId $nowPostId")
                 if(nowPostId==null)postRepository.uploadPost(title, tag, content, userUid)
                 else postRepository.updatePost(nowPostId,title,tag,content,userUid)
                 val tagsList = if (_tags.value?.toList().isNullOrEmpty()) null else _tags.value?.toList()
@@ -82,7 +84,7 @@ class PostViewModel : ViewModel() {
 
                 _uploadResult.value = Result.success(true) // 업로드 성공
             } catch (e: Exception) {
-                _uploadResult.value = Result.failure(e) // 업로드 실패
+                _uploadResult.value = Result.failure(Exception("업로드에 실패했습니다.")) // 업로드 실패
             }
         }
     }
@@ -101,6 +103,7 @@ class PostViewModel : ViewModel() {
                 }
                 Log.d("PostViewModel", "Post retrieved successfully: $postId")
             } catch (e: Exception) {
+                uploadResult.value
                 Log.e("PostViewModel", "Error retrieving post by ID $postId: ${e.message}")
             }
         }
@@ -133,10 +136,10 @@ class PostViewModel : ViewModel() {
             try {
                 // Firebase에 댓글 업로드 요청
                 postRepository.uploadReply(content, postId, uid)
-                retrieveReplies(postId) // 업로드 후 해당 게시글의 댓글 목록 갱신
+                retrievePostById(postId) // 업로드 후 해당 게시글의 댓글 목록 갱신
                 _uploadResult.value = Result.success(true) // 업로드 성공
             } catch (e: Exception) {
-                _uploadResult.value = Result.failure(e) // 업로드 실패
+                _uploadResult.value = Result.failure(Exception("업로드에 실패했습니다.")) // 업로드 실패
                 Log.e("PostViewModel", "Error uploading reply: ${e.message}")
             }
         }
@@ -235,7 +238,7 @@ class PostViewModel : ViewModel() {
 
         // currentPost의 recommendTime이 현재 uid를 포함하고 있는지 확인
         nowPost.value?.let { post ->
-            if (post.postRecommendCount.contains(uid)) {
+            if (uid in post.postRecommendCount) {
                 // 이미 추천한 경우
                 _uploadResult.value = Result.failure(Exception("이미 추천한 게시글입니다."))
             } else {

@@ -20,7 +20,7 @@ class PostListAdapter(private val postViewModel: PostViewModel) : RecyclerView.A
             binding.postTag.text = "[ ${post.postTag} ]"
             binding.postImageType.setImageResource(R.drawable.ic_image)
             binding.postViewTime.text="조회 ${post.postViewCount.toString()}"
-            binding.postRecommendTime.text="추천 ${post.postRecommendCount.toString()}"
+            binding.postRecommendTime.text="추천 ${post.postRecommendCount.size}"
 
             itemView.setOnClickListener {
                 // 게시물 선택 시 ViewModel에 저장

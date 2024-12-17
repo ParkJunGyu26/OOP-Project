@@ -53,6 +53,7 @@ class UserViewModel : ViewModel() {
                     }
                 }
                 is UserResponse.Error -> _userInfoList.value = hashMapOf()  // 에러 시 빈 HashMap
+                else -> return@launch
             }
         }
     }
