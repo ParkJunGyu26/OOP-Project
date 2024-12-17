@@ -110,7 +110,6 @@ class updateMypageFragment : Fragment() {
                             Toast.makeText(context, "알 수 없는 에러", Toast.LENGTH_SHORT).show()
                         }
                     }
-                    result.logError()  // 에러 로깅
                 }
             }
         }
@@ -160,8 +159,8 @@ class updateMypageFragment : Fragment() {
             .setTitle("프로필 사진")
             .setItems(options) { dialog, which ->
                 when (which) {
-                    0 -> getContent.launch("image/*")  // 갤러리 열기
-                    1 -> mypageViewModel.setDefaultImage()  // uid 전거
+                    0 -> getContent.launch("image/*")
+                    1 -> mypageViewModel.setDefaultImage()
                 }
             }
             .show()
