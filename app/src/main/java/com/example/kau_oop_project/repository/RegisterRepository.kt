@@ -11,24 +11,25 @@ class RegisterRepository : UserRepository() {
         return withContext(Dispatchers.IO) {
             try {
                 val snapshot = findUserByEmail(email)
-                if (snapshot?.exists() == true) {
-                    RegisterResponse.Error.DuplicateEmail
-                } else {
-                    RegisterResponse.Success
-                }
+                snapshot?.let {
+                    if (it.exists()) RegisterResponse.Error.DuplicateEmail
+                    else RegisterResponse.Success
+                } ?: RegisterResponse.Error.Unknown
             } catch (e: Exception) {
-                RegisterResponse.Error.Unknown(e.message ?: "Unknown error")
+                RegisterResponse.Error.Unknown
             }
         }
     }
 
-    suspend fun registerUser(user: User): RegisterResponse = withContext(Dispatchers.IO) {
-        try {
-            val newUserRef = userRef.push()
-            newUserRef.setValue(user).await()
-            RegisterResponse.Success
-        } catch (e: Exception) {
-            RegisterResponse.Error.Unknown(e.message ?: "Unknown error")
+    suspend fun registerUser(user: User): RegisterResponse {
+        return withContext(Dispatchers.IO) {
+            try {
+                val newUserRef = userRef.push()
+                newUserRef.setValue(user).await()
+                RegisterResponse.Success
+            } catch (e: Exception) {
+                RegisterResponse.Error.Unknown
+            }
         }
     }
 }
