@@ -72,11 +72,13 @@ class PostViewModel : ViewModel() {
             return
         }
 
+        val nowPostId=nowPost.value?.postId
+
         // 유효성 검사 통과 후, Repository에 데이터 전달
         viewModelScope.launch {
             try {
-                // Firebase에 게시글 업로드 요청
-                postRepository.uploadPost(title, tag, content, userUid)
+                if(nowPostId==null)postRepository.uploadPost(title, tag, content, userUid)
+                else postRepository.updatePost(nowPostId,title,tag,content,userUid)
                 val tagsList = if (_tags.value?.toList().isNullOrEmpty()) null else _tags.value?.toList()
                 retrievePosts(searchTags = tagsList) // 업로드 후 태그로 게시글 검색
 
@@ -106,8 +108,8 @@ class PostViewModel : ViewModel() {
         }
     }
 
-    fun selectReply(reply: Reply){
-        _selectedReply.value=reply
+    fun removeNowPost() {
+        _nowPost.value=null
     }
 
     // 댓글 업로드

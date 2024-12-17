@@ -45,6 +45,9 @@ class PostListFragment : Fragment() {
         binding?.recyclerPosts?.layoutManager = LinearLayoutManager(context)
         binding?.recyclerPosts?.adapter = adapter
 
+        // 현재 리스트 목록에 있다면 NowPost는 존재하지 않음,
+        postViewModel.removeNowPost()
+
         // btn_refresh 클릭 시 데이터 새로고침
         binding?.btnRefresh?.setOnClickListener {
             postViewModel.retrievePosts()

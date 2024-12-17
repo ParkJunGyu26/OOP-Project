@@ -33,6 +33,15 @@ class PostWriteFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // nowPost가 존재하는 상태로 작성이 열리는 경우(수정)
+        postViewModel.nowPost.value?.let{ it ->
+            binding?.inputTag?.setText(it.postTag)
+            binding?.inputTitle?.setText(it.postTitle)
+            val combinedContent = it.postContent
+                .filter { content -> content.type == ContentType.TEXT } // TEXT 타입만 필터링
+                .joinToString(separator = "\n") { it.content }
+            binding?.inputContent?.setText(combinedContent)
+        }
 
         // 게시글 제출 버튼 클릭 리스너
         binding?.buttonSubmit?.setOnClickListener {

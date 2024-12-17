@@ -10,7 +10,7 @@ import com.example.kau_oop_project.R
 import com.example.kau_oop_project.ui.post.viewmodel.PostViewModel
 import com.example.kau_oop_project.ui.user.viewmodel.UserViewModel
 
-class PostListAdapter(private val postViewModel: PostViewModel,private val userViewModel:UserViewModel) : RecyclerView.Adapter<PostListAdapter.ViewHolder>() {
+class PostListAdapter(private val postViewModel: PostViewModel) : RecyclerView.Adapter<PostListAdapter.ViewHolder>() {
 
     private var posts: List<Post> = emptyList()
 
