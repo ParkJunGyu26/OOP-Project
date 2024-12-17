@@ -33,8 +33,8 @@ class PostViewModel : ViewModel() {
     private val _replies = MutableLiveData<List<Reply>>()
     val replies: LiveData<List<Reply>> get() = _replies
 
-    private val _UploadResult = MutableLiveData<Result<Boolean>>()
-    val UploadResult: LiveData<Result<Boolean>> get() = _UploadResult
+    private val _uploadResult = MutableLiveData<Result<Boolean>>()
+    val uploadResult: LiveData<Result<Boolean>> get() = _uploadResult
 
 
     init {
@@ -68,7 +68,7 @@ class PostViewModel : ViewModel() {
 
         // 유효성 검사 통과 시
         validationMessage?.let {
-            _UploadResult.value = Result.failure(Exception(it)) // 실패 메시지 전달
+            _uploadResult.value = Result.failure(Exception(it)) // 실패 메시지 전달
             return
         }
 
@@ -82,9 +82,9 @@ class PostViewModel : ViewModel() {
                 val tagsList = if (_tags.value?.toList().isNullOrEmpty()) null else _tags.value?.toList()
                 retrievePosts(searchTags = tagsList) // 업로드 후 태그로 게시글 검색
 
-                _UploadResult.value = Result.success(true) // 업로드 성공
+                _uploadResult.value = Result.success(true) // 업로드 성공
             } catch (e: Exception) {
-                _UploadResult.value = Result.failure(e) // 업로드 실패
+                _uploadResult.value = Result.failure(e) // 업로드 실패
             }
         }
     }
@@ -126,7 +126,7 @@ class PostViewModel : ViewModel() {
 
         // 유효성 검사 통과 시
         validationMessage?.let {
-            _UploadResult.value = Result.failure(Exception(it)) // 실패 메시지 전달
+            _uploadResult.value = Result.failure(Exception(it)) // 실패 메시지 전달
             return
         }
 
@@ -136,9 +136,9 @@ class PostViewModel : ViewModel() {
                 // Firebase에 댓글 업로드 요청
                 postRepository.uploadReply(content, postId, uid)
                 retrieveReplies(postId) // 업로드 후 해당 게시글의 댓글 목록 갱신
-                _UploadResult.value = Result.success(true) // 업로드 성공
+                _uploadResult.value = Result.success(true) // 업로드 성공
             } catch (e: Exception) {
-                _UploadResult.value = Result.failure(e) // 업로드 실패
+                _uploadResult.value = Result.failure(e) // 업로드 실패
                 Log.e("PostViewModel", "Error uploading reply: ${e.message}")
             }
         }

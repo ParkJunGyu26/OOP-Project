@@ -2,6 +2,7 @@ package com.example.kau_oop_project.ui.post.view
 
 import android.app.AlertDialog
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -39,7 +40,7 @@ class PostDetailFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // 댓글 RecyclerView 설정
-        adapter = ReplyAdapter(userViewModel,postViewModel) // 어댑터를 생성할 때 ViewModel을 직접 넘기지 않고, 댓글 데이터를 업데이트할 수 있도록 수정
+        adapter = ReplyAdapter(userViewModel,postViewModel)
         binding?.replyList?.layoutManager = LinearLayoutManager(context)
         binding?.replyList?.adapter = adapter
 
@@ -47,23 +48,37 @@ class PostDetailFragment : Fragment() {
         postViewModel.nowPost.observe(viewLifecycleOwner) { post ->
             post?.let { loadPost(it.postId) }
 
-            // userViewModel의 currentUser와 postViewModel의 nowPost의 postAuthorId 비교하여 버튼 가시성 설정
+            // 필요한 uid들 저장
             val currentUserId = userViewModel.currentUser.value
             val postAuthorId = post?.postAuthorId
+            val replyAuthorIds = postViewModel.replies.value?.map { it.replyAuthorId } ?: emptyList()
+            val postAuthorIds=postViewModel.nowPost.value?.postAuthorId
+            val userIdList=replyAuthorIds+listOf(postAuthorIds).distinct()
+            Log.d("PostDetailFragment", "post author uid : $postAuthorId")
 
+            // userViewModel의 currentUser와 postViewModel의 nowPost의 postAuthorId 비교하여 버튼 가시성 설정
             if (currentUserId == postAuthorId) {
                 // 현재 사용자와 게시물 작성자가 같을 때 버튼 보이게
                 binding?.btnDelete?.visibility = View.VISIBLE
+                binding?.btnFix?.visibility=View.VISIBLE
             } else {
                 // 현재 사용자와 게시물 작성자가 다를 때 버튼 숨기기
                 binding?.btnDelete?.visibility = View.GONE
+                binding?.btnFix?.visibility=View.GONE
             }
         }
 
         // 댓글 리스트 변경을 관찰
         postViewModel.replies.observe(viewLifecycleOwner) { replies ->
-            replies?.let {
-                adapter.updateReplyList(it) // 댓글 리스트를 어댑터에 전달
+            replies?.let { reply ->
+                val replyAuthorIds = postViewModel.replies.value?.map { it.replyAuthorId } ?: emptyList()
+                val postAuthorIds=postViewModel.nowPost.value?.postAuthorId
+                val userIdList=replyAuthorIds+listOf(postAuthorIds).distinct()
+                Log.d("PostDetailFragment", "reply uid List : $userIdList")
+//                userIdList.let{
+//                    userViewModel.getUsers(it)
+//                }
+                adapter.updateReplyList(reply) // 댓글 리스트를 어댑터에 전달
             }
         }
 
@@ -77,7 +92,7 @@ class PostDetailFragment : Fragment() {
                 postViewModel.uploadReply(replyContent, user)
 
                 // 업로드 결과 관찰
-                postViewModel.UploadResult.observe(viewLifecycleOwner) { result ->
+                postViewModel.uploadResult.observe(viewLifecycleOwner) { result ->
                     if (!isToasted) {
                         isToasted = true
                         when {
@@ -129,7 +144,7 @@ class PostDetailFragment : Fragment() {
                 // 게시물 상세 정보 설정
                 postDetailTitle.text = "[ ${post.postTitle} ]"
                 postDetailTag.text = post.postTag
-                postDetailAuthor.text = post.postAuthorId
+                //postDetailAuthor.text = userViewModel.userInfoList.value?.get(postAuthorId)?.name
                 postDetailTimeStamp.text = "작성 시간 ${postViewModel.formatTime(post.postTimeStamp)}"
                 postDetailRecommendCount.text = "추천 ${post.postRecommendCount}"
                 postDetailViewCount.text = "조회수 ${post.postViewCount}"

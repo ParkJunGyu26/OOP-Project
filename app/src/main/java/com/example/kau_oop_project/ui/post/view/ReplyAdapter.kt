@@ -26,9 +26,12 @@ class ReplyAdapter(private val userViewModel: UserViewModel,private val postView
     inner class ReplyViewHolder(private val binding: ItemReplyBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(reply: Reply) {
             // 댓글 작성자와 내용 설정
-            binding.replyUserName.text = reply.replyAuthorId  // 댓글 작성자
-            binding.replyContent.text = reply.replyContent    // 댓글 내용
-            binding.replyWrittenTime.text=formatTime(reply.replyTimeStamp)
+            val replyUserName=userViewModel.userInfoList.value?.get(reply.replyAuthorId)?.name
+            val replyUserProfileImageUrl=userViewModel.userInfoList.value?.get(reply.replyAuthorId)?.profileImage
+            binding.replyUserName.text = replyUserName // 댓글 작성자
+            binding.userProfileImage.setImageResource(replyUserProfileImageUrl) // 댓글
+            binding.replyContent.text = reply.replyContent // 댓글 내용
+            binding.replyWrittenTime.text=formatTime(reply.replyTimeStamp) // 작성 시간
 
             itemView.setOnClickListener {
                 // 다이얼로그 레이아웃 설정
