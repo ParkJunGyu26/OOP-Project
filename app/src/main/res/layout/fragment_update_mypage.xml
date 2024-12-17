@@ -16,97 +16,113 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:src="@tools:sample/avatars" />
 
+    <ImageButton
+        android:id="@+id/btn_add_photo"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="@drawable/add"
+        android:backgroundTint="#1565C0"
+        app:layout_constraintBottom_toBottomOf="@id/txt_my_before_image"
+        app:layout_constraintEnd_toEndOf="@id/txt_my_before_image"
+        android:layout_marginEnd="-15dp"
+        android:layout_marginBottom="-15dp"/>
+
     <TextView
         android:id="@+id/textView5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="10dp"
-        android:text="닉네임"
+        android:layout_marginStart="80dp"
+        android:text="이름"
         android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/txt_before_my_name"
-        app:layout_constraintEnd_toStartOf="@+id/txt_before_my_name"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/txt_before_my_name" />
 
     <EditText
         android:id="@+id/txt_before_my_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
         android:layout_marginTop="60dp"
         android:ems="10"
         android:inputType="text"
-        android:text="항공대 마하"
-        app:layout_constraintTop_toBottomOf="@+id/txt_my_before_image"
-        tools:layout_editor_absoluteX="108dp" />
+        android:text=""
+        app:layout_constraintStart_toEndOf="@+id/textView5"
+        app:layout_constraintTop_toBottomOf="@+id/txt_my_before_image" />
 
     <TextView
         android:id="@+id/textView6"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="10dp"
+        android:layout_marginStart="80dp"
         android:text="이메일"
         android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/txt_before_my_email"
-        app:layout_constraintEnd_toStartOf="@+id/txt_before_my_email"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/txt_before_my_email" />
 
     <EditText
         android:id="@+id/txt_before_my_email"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
         android:layout_marginTop="30dp"
         android:ems="10"
         android:inputType="text"
-        android:text="abc@kau.ac.kr"
-        app:layout_constraintTop_toBottomOf="@+id/txt_before_my_name"
-        tools:layout_editor_absoluteX="106dp" />
+        android:text=""
+        app:layout_constraintStart_toEndOf="@+id/textView6"
+        app:layout_constraintTop_toBottomOf="@+id/txt_before_my_name" />
 
     <TextView
         android:id="@+id/textView7"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="10dp"
+        android:layout_marginStart="80dp"
         android:text="학교"
         android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/txt_before_my_school"
-        app:layout_constraintEnd_toStartOf="@+id/txt_before_my_school"
+        app:layout_constraintEnd_toEndOf="@+id/textView6"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/txt_before_my_school" />
 
     <EditText
         android:id="@+id/txt_before_my_school"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
         android:layout_marginTop="30dp"
         android:ems="10"
         android:inputType="text"
-        android:text="항공대"
-        app:layout_constraintEnd_toEndOf="@+id/txt_before_my_email"
-        app:layout_constraintStart_toStartOf="@+id/txt_before_my_email"
+        android:text=""
+        app:layout_constraintStart_toEndOf="@+id/textView7"
         app:layout_constraintTop_toBottomOf="@+id/txt_before_my_email" />
 
     <TextView
         android:id="@+id/textView8"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="10dp"
+        android:layout_marginStart="80dp"
         android:text="전공"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/txt_before_my_major"
-        app:layout_constraintEnd_toStartOf="@+id/txt_before_my_major"
+        app:layout_constraintEnd_toEndOf="@+id/textView6"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/txt_before_my_major" />
 
     <EditText
         android:id="@+id/txt_before_my_major"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
         android:layout_marginTop="30dp"
         android:ems="10"
         android:inputType="text"
-        android:text="소프트웨어"
+        android:text=""
         app:layout_constraintEnd_toEndOf="@+id/txt_before_my_school"
-        app:layout_constraintStart_toStartOf="@+id/txt_before_my_school"
+        app:layout_constraintStart_toEndOf="@+id/textView8"
         app:layout_constraintTop_toBottomOf="@+id/txt_before_my_school" />
 
     <Button

@@ -13,6 +13,8 @@ import com.example.kau_oop_project.ui.user.viewmodel.UserViewModel
 import com.example.kau_oop_project.data.model.response.MypageResponse
 import androidx.navigation.fragment.findNavController
 import com.example.kau_oop_project.R
+import com.bumptech.glide.Glide
+import android.widget.Toast
 
 class MypageFragment : Fragment() {
     private var binding: FragmentMypageBinding? = null
@@ -31,12 +33,38 @@ class MypageFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         
         setupButtons()
+        loadUserInfo()
         
-        userViewModel.currentUser.observe(viewLifecycleOwner) { user ->
-            user?.let {
-                binding?.apply {
-                    txtMyName.text = it.name
-                    // 나중에 이미지 처리
+        // 유저 정보 변경 관찰
+        mypageViewModel.mypageResult.observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is MypageResponse.Success -> {
+                    binding?.apply {
+                        txtMyName.text = result.userInfo.name
+                        
+                        Glide.with(requireContext())
+                            .load(result.userInfo.profileImage)
+                            .circleCrop()
+                            .error(R.drawable.default_image)
+                            .into(txtMyImage)
+                    }
+                }
+                is MypageResponse.Error -> {
+                    when (result) {
+                        is MypageResponse.Error.UserNotFound -> {
+                            Toast.makeText(context, "사용자를 찾을 수 없습니다.", Toast.LENGTH_SHORT).show()
+                        }
+                        is MypageResponse.Error.ImageUploadFailed -> {
+                            Toast.makeText(context, "이미지 업로드 실패", Toast.LENGTH_SHORT).show()
+                        }
+                        is MypageResponse.Error.UpdateFailed -> {
+                            Toast.makeText(context, "정보 업데이트 실패", Toast.LENGTH_SHORT).show()
+                        }
+                        is MypageResponse.Error.Unknown -> {
+                            Toast.makeText(context, "알 수 없는 에러", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                    result.logError()  // 에러 로깅
                 }
             }
         }
@@ -51,6 +79,12 @@ class MypageFragment : Fragment() {
             btnMypageToLog.setOnClickListener {
                 findNavController().navigate(R.id.action_mypageFragment_to_myLogFragment)
             }
+        }
+    }
+
+    private fun loadUserInfo() {
+        userViewModel.currentUser.value?.let { uid ->
+            mypageViewModel.getUserInfo(uid)
         }
     }
 

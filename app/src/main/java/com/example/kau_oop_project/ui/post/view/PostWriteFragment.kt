@@ -54,7 +54,7 @@ class PostWriteFragment : Fragment() {
             // currentUser UID 가져오기
             userViewModel.currentUser.value?.let { user ->
                 // ViewModel에 업로드 요청
-                postViewModel.uploadPost(title, tag, content, user.uid)
+                postViewModel.uploadPost(title, tag, content, user)
 
                 // 업로드 결과 관찰
                 postViewModel.postUploadResult.observe(viewLifecycleOwner) { result ->
