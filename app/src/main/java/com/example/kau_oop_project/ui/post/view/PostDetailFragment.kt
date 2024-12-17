@@ -34,6 +34,7 @@ class PostDetailFragment : Fragment() {
     ): View? {
         // FragmentPostDetailBinding 초기화
         binding = FragmentPostDetailBinding.inflate(inflater, container, false)
+
         return binding?.root
     }
 
@@ -45,18 +46,38 @@ class PostDetailFragment : Fragment() {
         binding?.replyList?.layoutManager = LinearLayoutManager(context)
         binding?.replyList?.adapter = adapter
 
+        postViewModel.uploadResult.observe(viewLifecycleOwner) { result ->
+            when {
+                result.isSuccess -> {
+                    Toast.makeText(requireContext(), "작업이 완료되었습니다.", Toast.LENGTH_SHORT).show()
+                }
+                result.isFailure -> {
+                    val exception = result.exceptionOrNull()
+                    Toast.makeText(requireContext(), "${exception?.message}", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+
         // 선택된 게시물 데이터 관찰 및 UI 업데이트
         postViewModel.nowPost.observe(viewLifecycleOwner) { post ->
-            post?.let { loadPost(it.postId) }
+            post?.let {
+                // 댓글을 로드
+                postViewModel.retrieveReplies(it.postId)
+                loadPost(it.postId)
+
+                // 게시물 작성자 정보를 얻기 위해 userViewModel에 요청
+                val postAuthorId = it.postAuthorId
+                userViewModel.getUsers(listOf(postAuthorId), 1) // 게시물 작성자 정보 가져오기
+
+                // 댓글 작성자 정보 로드 (중복 제거)
+                val replyAuthorIds = postViewModel.replies.value?.map { reply->reply.replyAuthorId }?.distinct() ?: emptyList()
+                userViewModel.getUsers(replyAuthorIds, 2) // 댓글 작성자 정보 가져오기
+            }
+            Log.d("PostDetailFragment", "RRRRRRR : ${postViewModel.replies.value}")
 
             // 필요한 uid들 저장
             val currentUserId = userViewModel.currentUser.value
             val postAuthorId = post?.postAuthorId
-            val replyAuthorIds = postViewModel.replies.value?.map { it.replyAuthorId } ?: emptyList()
-            val postAuthorIds=postViewModel.nowPost.value?.postAuthorId
-            val userIdList=replyAuthorIds+listOf(postAuthorIds).distinct()
-            userViewModel.getUsers(userIdList,1)
-            Log.d("PostDetailFragment", "userIdList :$userIdList \n get User Info : ${userViewModel.postUsersInfoList.value?.values}")
 
             // userViewModel의 currentUser와 postViewModel의 nowPost의 postAuthorId 비교하여 버튼 가시성 설정
             if (currentUserId == postAuthorId) {
@@ -74,43 +95,20 @@ class PostDetailFragment : Fragment() {
         postViewModel.replies.observe(viewLifecycleOwner) { replies ->
             replies?.let { reply ->
                 val replyAuthorIds = postViewModel.replies.value?.map { it.replyAuthorId } ?: emptyList()
-                val postAuthorIds=postViewModel.nowPost.value?.postAuthorId
-                val userIdList=replyAuthorIds+listOf(postAuthorIds).distinct()
-                userViewModel.getUsers(userIdList,1)
-                Log.d("PostDetailFragment", "userIdList :$userIdList \n get User Info : ${userViewModel.postUsersInfoList.value?.values}")
+                userViewModel.getUsers(replyAuthorIds.distinct(),2)
                 adapter.updateReplyList(reply) // 댓글 리스트를 어댑터에 전달
             }
         }
 
         // 댓글 입력 버튼 클릭 리스너 설정
         binding?.btnReplyInput?.setOnClickListener {
+            // 댓글 내용 가져오기
             val replyContent = binding?.inputPostReply?.text?.toString()?.trim() ?: ""
-            var isToasted = false
-            // currentUser가 존재하는 경우
-            userViewModel.currentUser.value?.let { user ->
-                // ViewModel에 댓글 업로드 요청
-                postViewModel.uploadReply(replyContent, user)
 
-                // 업로드 결과 관찰
-                postViewModel.uploadResult.observe(viewLifecycleOwner) { result ->
-                    if (!isToasted) {
-                        isToasted = true
-                        when {
-                            result.isSuccess -> {
-                                // 성공 시
-                                Toast.makeText(requireContext(), "댓글이 등록되었습니다.", Toast.LENGTH_SHORT).show()
-                            }
-                            result.isFailure -> {
-                                // 실패 시
-                                val exception = result.exceptionOrNull()
-                                Toast.makeText(requireContext(), "${exception?.message}", Toast.LENGTH_SHORT).show()
-                            }
-                        }
-                    }
-                }
-            } ?: run {
-                // 로그인된 사용자가 없는 경우
-                Toast.makeText(requireContext(), "로그인된 사용자가 없습니다.", Toast.LENGTH_SHORT).show()
+            // 댓글이 작성되었을 때
+            userViewModel.currentUser.value?.let { user ->
+                // 댓글 업로드 요청
+                postViewModel.uploadReply(replyContent, user)
             }
         }
 
@@ -129,7 +127,9 @@ class PostDetailFragment : Fragment() {
         }
 
         binding?.btnRecommend?.setOnClickListener {
-            postViewModel.incrementRecommendCount()
+            userViewModel.currentUser.value?.let {
+                postViewModel.incrementRecommendCount(it)
+            }
         }
 
         binding?.btnFix?.setOnClickListener{
@@ -169,9 +169,6 @@ class PostDetailFragment : Fragment() {
             // 게시글 데이터가 없을 경우 처리
             Toast.makeText(requireContext(), "게시글 정보를 불러올 수 없습니다.", Toast.LENGTH_SHORT).show()
         }
-
-        // 댓글 리스트 로드
-        postViewModel.retrieveReplies(postId) // ViewModel에서 댓글 데이터 가져오기
     }
 
 

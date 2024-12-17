@@ -47,8 +47,6 @@ class PostViewModel : ViewModel() {
             try {
                 val postList: List<Post> = postRepository.retrievePosts(searchUserId,searchTags,searchInput)
                 _posts.value=postList
-                Log.d("PostViewModel", "Posts retrieved successfully: ${postList.size}")
-                Log.d("PostViewModel", "option: uid $searchUserId, input : $searchInput, tags : $searchTags")
             } catch (e: Exception) {
                 Log.e("PostViewModel", "Error retrieving posts: ${e.message}")
             }
@@ -227,11 +225,36 @@ class PostViewModel : ViewModel() {
     }
 
     // 추천수 증가
-    fun incrementRecommendCount() {
-        nowPost.value?.postId?.let{
-            viewModelScope.launch {
-                postRepository.incrementRecommendCount(it)
-                retrievePostById(it)
+    fun incrementRecommendCount(uid: String?) {
+        // uid가 null인지 확인
+        if (uid == null) {
+            // null인 경우 처리 (예: 에러 메시지 출력)
+            _uploadResult.value = Result.failure(Exception("사용자를 인식할 수 없습니다."))
+            return
+        }
+
+        // currentPost의 recommendTime이 현재 uid를 포함하고 있는지 확인
+        nowPost.value?.let { post ->
+            if (post.postRecommendCount.contains(uid)) {
+                // 이미 추천한 경우
+                _uploadResult.value = Result.failure(Exception("이미 추천한 게시글입니다."))
+            } else {
+                // uid가 포함되지 않은 경우
+                viewModelScope.launch {
+                    try {
+                        // recommendTime에 uid 추가 및 추천 수 증가
+                        postRepository.incrementRecommendCount(post.postId, uid)
+
+                        // 추천 처리 결과 후, post 업데이트
+                        retrievePostById(post.postId)
+
+                        // 성공적으로 추천된 후 uploadResult를 변경
+                        _uploadResult.value = Result.success(true) // 업로드 성공
+                    } catch (e: Exception) {
+                        // 추천 실패 시 uploadResult를 실패로 설정
+                        _uploadResult.value = Result.failure(Exception("알 수 없는 에러입니다."))
+                    }
+                }
             }
         }
     }

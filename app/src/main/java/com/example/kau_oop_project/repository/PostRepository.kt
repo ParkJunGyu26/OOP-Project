@@ -36,7 +36,7 @@ class PostRepository {
                 postId = databaseId,
                 postTag = tag,
                 postTitle = title,
-                postRecommendCount = 0,
+                postRecommendCount = emptySet(),
                 postViewCount = 0,
                 postAuthorId = uid,
                 postContent = postContents,
@@ -257,7 +257,7 @@ class PostRepository {
     }
 
     // 게시글 추천수 증가
-    suspend fun incrementRecommendCount(postId: String) {
+    suspend fun incrementRecommendCount(postId: String,uid : String) {
         withContext(Dispatchers.IO) {
             try {
                 // 해당 게시글을 가져오기
@@ -266,7 +266,7 @@ class PostRepository {
 
                 // 게시글 추천수 증가
                 currentPost?.let {
-                    val newRecommendCount = it.postRecommendCount + 1 // 현재 추천수에 1을 더함
+                    val newRecommendCount = it.postRecommendCount + uid // 현재 추천수에 1을 더함
                     postsRef.child(postId).child("postRecommendCount").setValue(newRecommendCount).await() // Firebase에 반영
                 }
             } catch (e: Exception) {

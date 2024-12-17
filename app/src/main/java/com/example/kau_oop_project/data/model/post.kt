@@ -30,7 +30,7 @@ data class Post(
     val postTag: String="",
     val postTitle: String="",
     val postAuthorId: String="",
-    var postRecommendCount:Int=0,
+    var postRecommendCount:Set<String>,
     var postViewCount:Int=0,
     val postContent: List<PostContent> = emptyList(),
     val postReplyIdList: List<String> = emptyList(),
