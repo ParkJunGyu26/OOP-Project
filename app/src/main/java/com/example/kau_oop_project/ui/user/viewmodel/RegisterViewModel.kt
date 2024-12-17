@@ -8,9 +8,8 @@ import com.example.kau_oop_project.data.model.User
 import com.example.kau_oop_project.data.model.response.RegisterResponse
 import com.example.kau_oop_project.repository.RegisterRepository
 import com.example.kau_oop_project.data.validator.RegisterValidator
-import com.example.kau_oop_project.data.model.validation.ValidationResult
+import com.example.kau_oop_project.data.validator.ValidationResult
 import kotlinx.coroutines.launch
-import java.util.*
 
 class FieldValidation(
     val message: String = "",
