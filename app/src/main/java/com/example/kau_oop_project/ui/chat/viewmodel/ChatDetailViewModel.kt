@@ -1,10 +1,11 @@
 package com.example.kau_oop_project.ui.chat.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.kau_oop_project.data.model.chat.ChatMessage
+import com.example.kau_oop_project.data.model.ChatMessage
 import com.example.kau_oop_project.repository.ChatDetailRepository
 import kotlinx.coroutines.launch
 
@@ -18,6 +19,10 @@ class ChatDetailViewModel : ViewModel() {
     // 메시지 전송 상태
     private val _messageStatus = MutableLiveData<Boolean>()
     val messageStatus: LiveData<Boolean> get() = _messageStatus
+
+    // 참가자 이름 상태
+    private val _participantName = MutableLiveData<String>()
+    val participantName: LiveData<String> get() = _participantName
 
     /**
      * 특정 채팅방의 메시지를 로드
@@ -35,6 +40,8 @@ class ChatDetailViewModel : ViewModel() {
      * 메시지 전송
      */
     fun sendMessage(chatRoomId: String, senderId: String, message: String) {
+        Log.d("ChatDetailViewModel", "sendMessage called with chatRoomId=$chatRoomId, senderId=$senderId, message=$message")
+
         if (message.isBlank()) {
             _messageStatus.value = false
             return
@@ -51,6 +58,18 @@ class ChatDetailViewModel : ViewModel() {
         viewModelScope.launch {
             val result = repository.sendMessage(chatMessage)
             _messageStatus.value = result.isSuccess
+        }
+    }
+
+
+    /**
+     * 참가자 정보 로드
+     */
+    fun loadParticipantInfo(participantUid: String) {
+        viewModelScope.launch {
+            repository.getUserInfo(participantUid).collect { userInfo ->
+                _participantName.value = userInfo.id
+            }
         }
     }
 }

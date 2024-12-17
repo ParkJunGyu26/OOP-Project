@@ -12,7 +12,7 @@ import kotlinx.coroutines.withContext
 
 open class UserRepository {
     private val database = Firebase.database
-    protected val userRef = database.getReference("users")
+    val userRef = database.getReference("users")
 
     // 이메일로 사용자 조회하는 공통 메서드
     suspend fun findUserByEmail(email: String): DataSnapshot? {

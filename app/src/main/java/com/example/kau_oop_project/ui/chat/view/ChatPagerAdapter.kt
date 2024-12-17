@@ -20,6 +20,6 @@ class ChatPagerAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {
      * @return ChatListFragment 인스턴스
      */
     override fun createFragment(position: Int): Fragment {
-        return ChatListFragment.newInstance(position == 1)
+        return ChatListFragment()
     }
 }

@@ -1,10 +1,11 @@
 package com.example.kau_oop_project.ui.chat.view
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.kau_oop_project.R
-import com.example.kau_oop_project.data.model.chat.ChatRoom
+import com.example.kau_oop_project.data.model.ChatRoom
 import com.example.kau_oop_project.databinding.ItemChatBinding
 
 /**
@@ -21,13 +22,21 @@ class ChatAdapter(
         fun bind(chatRoom: ChatRoom) {
             binding.root.setOnClickListener { onItemClick(chatRoom) }
             binding.ivProfile.setImageResource(R.drawable.user)
-            binding.tvName.text = chatRoom.participants.getOrNull(1) ?: "Unknown"
-            binding.tvMessage.text = chatRoom.lastMessage
+
+            // participants Map의 첫 번째 키 가져오기 (예: 사용자 ID)
+            val participantName = chatRoom.participants.firstOrNull()?.name ?: "Unknown"
+            binding.tvName.text = participantName
+
+            // 마지막 메시지와 시간 바인딩
+            binding.tvMessage.text = chatRoom.lastMessage.ifEmpty { "메시지가 없습니다." }
             binding.tvTime.text = formatTime(chatRoom.lastMessageTime)
         }
 
-        private fun formatTime(timestamp: Long): String {
-            val sdf = java.text.SimpleDateFormat("HH:mm", java.util.Locale.getDefault())
+        private fun formatTime(timestamp: Long?): String {
+            if (timestamp == null || timestamp == 0L) {
+                return "시간 없음"
+            }
+            val sdf = java.text.SimpleDateFormat("hh:mm a", java.util.Locale.getDefault())
             return sdf.format(java.util.Date(timestamp))
         }
     }
@@ -44,6 +53,7 @@ class ChatAdapter(
     override fun getItemCount() = chatRooms.size
 
     fun updateChatRooms(newChatRooms: List<ChatRoom>) {
+        Log.d("ChatAdapter", "Updated chatRooms: $newChatRooms")
         chatRooms.clear()
         chatRooms.addAll(newChatRooms)
         notifyDataSetChanged()

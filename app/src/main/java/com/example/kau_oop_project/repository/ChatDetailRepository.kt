@@ -1,7 +1,7 @@
 package com.example.kau_oop_project.repository
 
 import android.util.Log
-import com.example.kau_oop_project.data.model.chat.ChatMessage
+import com.example.kau_oop_project.data.model.ChatMessage
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -14,15 +14,36 @@ import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 
 class ChatDetailRepository {
-
     private val database = FirebaseDatabase.getInstance()
     private val messagesRef = database.getReference("chats/messages")
+    private val chatRoomsRef = database.getReference("chats").child("rooms")
+    data class ChatResponse<T>(
+        val data: T? = null,
+        val error: String? = null
+    )
 
-    /**
-     * 특정 채팅방의 메시지 목록을 가져오는 함수
-     * @param chatRoomId 채팅방 ID
-     * @return 메시지 목록을 Flow로 반환 (예: callbackFlow 사용)
-     */
+    suspend fun sendMessage(message: ChatMessage): Result<Boolean> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val messageId = messagesRef.push().key ?: throw Exception("Failed to generate message ID")
+
+                // 메시지 저장
+                val updates = hashMapOf<String, Any>(
+                    "chats/messages/$messageId" to message,
+                    "chats/rooms/${message.chatRoomId}/lastMessage" to message.message,
+                    "chats/rooms/${message.chatRoomId}/lastMessageTime" to message.timestamp
+                )
+
+                database.reference.updateChildren(updates).await()
+                Result.success(true)
+            } catch (e: Exception) {
+                Log.e("ChatDetailRepository", "Error sending message: ${e.message}")
+                Result.failure(e)
+            }
+        }
+    }
+
+
     fun getMessages(chatRoomId: String): Flow<List<ChatMessage>> = callbackFlow {
         val query = messagesRef.orderByChild("chatRoomId").equalTo(chatRoomId)
 
@@ -31,12 +52,12 @@ class ChatDetailRepository {
                 val messages = snapshot.children.mapNotNull {
                     it.getValue(ChatMessage::class.java)
                 }
-                println("Loaded Messages: $messages") // 로그 추가
+                println("Loaded Messages: $messages")
                 trySend(messages).isSuccess
             }
 
             override fun onCancelled(error: DatabaseError) {
-                println("Firebase Error: ${error.message}") // Firebase 에러 확인
+                println("Firebase Error: ${error.message}")
                 close(error.toException())
             }
         }
@@ -45,19 +66,41 @@ class ChatDetailRepository {
         awaitClose { query.removeEventListener(listener) }
     }
 
-    /**
-     * 새 메시지를 채팅방에 전송하는 함수
-     * @param message 전송할 메시지
-     * @return 전송 성공 여부
-     */
-    suspend fun sendMessage(message: ChatMessage): Result<String> = withContext(Dispatchers.IO) {
-        try {
-            val newMessageRef = messagesRef.push()
-            newMessageRef.setValue(message).await()
-            Result.success(newMessageRef.key ?: "Unknown ID")
-        } catch (e: Exception) {
-            Log.e("ChatDetailRepository", "Error sending message", e)
-            Result.failure(e)
+    fun getUserInfo(participantUid: String): Flow<ChatRoom> = callbackFlow {
+        val userRef = FirebaseDatabase.getInstance().getReference("users").child(participantUid)
+        
+        val listener = object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val chatRoomId = snapshot.child("chatRoomId").getValue(String::class.java)
+                if (chatRoomId != null) {
+                    val chatRoomRef = FirebaseDatabase.getInstance().getReference("chats").child(chatRoomId)
+                    chatRoomRef.addListenerForSingleValueEvent(object : ValueEventListener {
+                        override fun onDataChange(chatRoomSnapshot: DataSnapshot) {
+                            val chatRoom = chatRoomSnapshot.getValue(ChatRoom::class.java)
+                            if (chatRoom != null) {
+                                trySend(chatRoom).isSuccess
+                            } else {
+                                trySend(ChatRoom(id = "Unknown")).isSuccess
+                            }
+                        }
+
+                        override fun onCancelled(error: DatabaseError) {
+                            close(error.toException())
+                        }
+                    })
+                } else {
+                    trySend(ChatRoom(id = "Unknown")).isSuccess
+                }
+            }
+            
+            override fun onCancelled(error: DatabaseError) {
+                close(error.toException())
+            }
         }
+
+        userRef.addListenerForSingleValueEvent(listener)
+        awaitClose { userRef.removeEventListener(listener) }
     }
+
+    data class ChatRoom(val id: String)
 }

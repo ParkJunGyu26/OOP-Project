@@ -22,7 +22,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/button_layout"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#00FFFFFF"
         android:padding="8dp"
@@ -50,6 +50,18 @@
             android:text="오픈채팅"
             android:textColor="#3C82F5"
             app:layout_constraintStart_toEndOf="@id/btn_chat"
+            app:layout_constraintTop_toTopOf="@id/btn_chat" />
+
+        <Button
+            android:id="@+id/btn_create_chat_room"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:backgroundTint="#3C82F5"
+            android:minWidth="16dp"
+            android:text="+"
+            android:textColor="#E2ECFE"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/btn_chat" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
