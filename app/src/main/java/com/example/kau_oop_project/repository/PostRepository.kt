@@ -16,12 +16,11 @@ class PostRepository {
     private val database = FirebaseDatabase.getInstance()
     private val postsRef = database.getReference("posts")
     private val repliesRef = database.getReference("replies")
-    private val userRef=database.getReference("user")
 
     suspend fun uploadPost(title: String, tag: String, content: String, uid: String) {
         withContext(Dispatchers.IO) {
             // Firebase가 생성한 고유 ID
-            val databaseId = postsRef.push().key ?: return@withContext
+            val postId = postsRef.push().key ?: return@withContext
 
             // timestamp를 현재 시간으로 설정
             val writtenTime = System.currentTimeMillis()
@@ -33,10 +32,10 @@ class PostRepository {
 
             // 새로운 Post 객체 생성
             val newPost = Post(
-                postId = databaseId,
+                postId = postId,
                 postTag = tag,
                 postTitle = title,
-                postRecommendCount = emptySet(),
+                postRecommendCount = emptyList(),
                 postViewCount = 0,
                 postAuthorId = uid,
                 postContent = postContents,
@@ -44,8 +43,11 @@ class PostRepository {
                 postTimeStamp = writtenTime
             )
 
+            Log.d("PostRepository", "upload posts: $newPost")
+
             // Firebase에 새로운 Post 저장
-            postsRef.child(databaseId).setValue(newPost).await()
+            postsRef.child(postId).setValue(newPost).await()
+            Log.d("PostRepository", "uploaded posts: $newPost")
         }
     }
 

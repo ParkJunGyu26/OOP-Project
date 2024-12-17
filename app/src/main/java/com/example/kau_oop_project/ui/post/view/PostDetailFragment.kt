@@ -91,12 +91,26 @@ class PostDetailFragment : Fragment() {
             }
         }
 
-        // 댓글 리스트 변경을 관찰
+        // 유저 정보가 업데이트되면 어댑터를 갱신
         postViewModel.replies.observe(viewLifecycleOwner) { replies ->
             replies?.let { reply ->
-                val replyAuthorIds = postViewModel.replies.value?.map { it.replyAuthorId } ?: emptyList()
-                userViewModel.getUsers(replyAuthorIds.distinct(),2)
-                adapter.updateReplyList(reply) // 댓글 리스트를 어댑터에 전달
+                // 댓글 작성자 ID 리스트 얻기
+                val replyAuthorIds =
+                    postViewModel.replies.value?.map { it.replyAuthorId } ?: emptyList()
+
+                // 유저 정보 요청
+                userViewModel.getUsers(replyAuthorIds.distinct(), 2)  // 댓글 작성자 정보 가져오기
+
+                // 유저 정보 업데이트된 후 어댑터에 전달
+                userViewModel.repliesUsersInfoList.observe(viewLifecycleOwner) { userInfoList ->
+                    userInfoList?.let {
+                        // 유저 정보를 어댑터에 전달하여 업데이트
+                        adapter.updateReplyList(reply)
+                    }
+                }
+
+                // 댓글 리스트를 어댑터에 전달
+                adapter.updateReplyList(reply)
             }
         }
 
@@ -155,7 +169,7 @@ class PostDetailFragment : Fragment() {
                 }
                 postDetailAuthor.text = postUserName
                 postDetailTimeStamp.text = "작성 시간 ${postViewModel.formatTime(post.postTimeStamp)}"
-                postDetailRecommendCount.text = "추천 ${post.postRecommendCount}"
+                postDetailRecommendCount.text = "추천 ${post.postRecommendCount.size}"
                 postDetailViewCount.text = "조회수 ${post.postViewCount}"
 
                 // 게시물 내용 표시

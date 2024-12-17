@@ -69,10 +69,6 @@ class PostListFragment : Fragment() {
             findNavController().navigate(R.id.postWriteFragment)
         }
 
-        binding?.btnUpload?.setOnClickListener {
-            Log.d("PostListFragment", "Posts search options ${userViewModel.currentUser.value}")
-        }
-
         binding?.btnTagAdd?.setOnClickListener {
             // 다이얼로그 레이아웃을 설정
             val dialogView = LayoutInflater.from(context).inflate(R.layout.popup_post_tag_add, null)
@@ -134,7 +130,7 @@ class PostListFragment : Fragment() {
                 }
 
                 // 태그 스타일 적용: 둥근 모양 및 색상
-                setTextColor(resources.getColor(android.R.color.white, null))
+                setTextColor(resources.getColor(android.R.color.background_dark, null))
                 textSize = 14f // 텍스트 크기 설정
             }
 
