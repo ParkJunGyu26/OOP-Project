@@ -155,6 +155,7 @@ class PostRepository {
             val reply=Reply(
                 replyId=replyId,
                 replyTimeStamp=System.currentTimeMillis(),
+                replyParentPostId=postId,
                 replyAuthorId = uid,
                 replyContent = content
             )
