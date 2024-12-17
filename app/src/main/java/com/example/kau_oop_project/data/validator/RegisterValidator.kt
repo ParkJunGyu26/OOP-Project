@@ -1,7 +1,6 @@
 package com.example.kau_oop_project.data.validator
 
 import android.util.Patterns
-//import com.example.kau_oop_project.data.model.validation.ValidationResult
 import java.util.regex.Pattern
 
 private const val PASSWORD_MIN_LENGTH = 8
