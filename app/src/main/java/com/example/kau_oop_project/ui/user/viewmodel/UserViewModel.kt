@@ -53,38 +53,4 @@ class UserViewModel : ViewModel() {
             }
         }
     }
-
-    // 테스트용 메서드
-//    fun testGetUsers() {
-//        viewModelScope.launch {
-//            // 실제 DB에 있는 uid 리스트로 테스트
-//            val testUids = listOf(
-//                "-NkWXYZ123abc",  // 여기에 실제 DB의 uid를 넣으세요
-//                "-NkWXYZ456def",
-//                "-NkWXYZ789ghi",
-//                "-NkWXYZ101jkl",
-//                "-NkWXYZ202mno"
-//            )
-//
-//            // 게시판용 테스트 (domain = 1)
-//            getUsers(testUids, 1)
-//
-//            // 결과 로깅
-//            postUsersInfoList.observe(/* lifecycleOwner */) { users ->
-//                users?.forEach { user ->
-//                    Log.d("UserTest", "게시판 유저: ${user?.name}, ${user?.userEmail}")
-//                }
-//            }
-//
-//            // 채팅용 테스트 (domain = 2)
-//            getUsers(testUids, 2)
-//
-//            // 결과 로깅
-//            userInfoList.observe(/* lifecycleOwner */) { users ->
-//                users?.forEach { user ->
-//                    Log.d("UserTest", "채팅 유저: ${user?.name}, ${user?.userEmail}")
-//                }
-//            }
-//        }
-//    }
 }
